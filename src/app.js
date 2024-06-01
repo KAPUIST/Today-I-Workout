@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
+app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
 const startServer = async () => {
     try {
