@@ -12,8 +12,6 @@ const app = express();
 
 app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
 
-app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
-
 const startServer = async () => {
     try {
         await connectDatabase();
