@@ -9,13 +9,13 @@ import commentRouter from "./routers/comment.router.js";
 dotenv.config();
 
 const app = express();
-
+const PORT = process.env.PORT || 3000;
 app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
 
 const startServer = async () => {
     try {
         await connectDatabase();
-        app.listen(3000, () => {
+        app.listen(PORT, () => {
             console.log("서버가 3000번 포트에서 실행 중입니다.");
         });
     } catch (error) {
