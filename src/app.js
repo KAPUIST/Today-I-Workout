@@ -1,8 +1,18 @@
 import express from "express";
 import { connectDatabase } from "./utils/prisma.util.js";
 import dotenv from "dotenv";
+import authRouter from "./routers/auth.router.js";
+import userRouter from "./routers/user.router.js";
+import postRouter from "./routers/post.router.js";
+import commentRouter from "./routers/comment.router.js";
+
 dotenv.config();
+
 const app = express();
+
+app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
+
+app.use("/api", [authRouter, userRouter, postRouter, commentRouter]);
 
 const startServer = async () => {
     try {
