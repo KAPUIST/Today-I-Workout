@@ -1,6 +1,6 @@
 import { prisma } from "../utils/prisma.util.js";
-import STATUS_CODES from "../constants/statusCode.js";
-import { orderOptions } from "../constants/orderConstant.js";
+import STATUS_CODES from "../constants/status.constant.js";
+import { orderOptions } from "../constants/order.constant.js";
 
 export const fetchPostsByPostType = async (postType, orderBy) => {
     let order;

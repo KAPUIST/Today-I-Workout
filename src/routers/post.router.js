@@ -1,6 +1,6 @@
 import express from "express";
-import STATUS_CODES from "../constants/statusCode.js";
-import { fetchPostsByPostType } from "../services/postService.js";
+import STATUS_CODES from "../constants/status.constant.js";
+import { fetchPostsByPostType } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 const router = express.Router();
 

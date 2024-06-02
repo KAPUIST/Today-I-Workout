@@ -1,6 +1,6 @@
 // 에러 핸들링 미들웨어
 import ErrorHandler from "../utils/customErrorHandler.js";
-import STATUS_CODES from "../constants/statusCode.js";
+import STATUS_CODES from "../constants/status.constant.js";
 export function CustomErrorHandler(error, req, res, next) {
     console.error(error);
     error = handleCommonErrors(error);
