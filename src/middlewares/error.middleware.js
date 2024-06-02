@@ -1,15 +1,19 @@
 // 에러 핸들링 미들웨어
 import ErrorHandler from "../utils/customErrorHandler.js";
-import STATUS_CODES from "../constants/statusCode.js";
+import STATUS_CODES from "../constants/status.constant.js";
 export function CustomErrorHandler(error, req, res, next) {
     console.error(error);
     error = handleCommonErrors(error);
-    error.statusCode = error.statusCode || 500;
-    error.message = error.message || "예상치 못한 에러가 발생했습니다. 관리자에게 문의해 주세요.";
+    // 에러 코드와 메시지 설정
+    error.statusCode = error.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR;
+    const message =
+        error.statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR
+            ? "서버에 문제가 발생했습니다. 나중에 다시 시도해 주세요."
+            : error.message;
 
     res.status(error.statusCode).json({
         statusCode: error.statusCode,
-        message: error.message
+        message: message
     });
 }
 function handleCommonErrors(error) {
