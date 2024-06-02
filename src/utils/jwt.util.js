@@ -7,7 +7,7 @@ export const generateAccessToken = (userId) => {
 };
 
 // 리프래쉬 토큰 생성 함수
-// RefreshToken(Payload에 사용자 ID를 포함하고 유효기간이 일주일)을 생성합니다.
+// RefreshToken(Payload에 사용자 ID를 포함하고 유효기간이 일주일)을 생성합니다. 
 export const generateRefreshToken = (userId) => {
     return jwt.sign({ id: userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' });
 };

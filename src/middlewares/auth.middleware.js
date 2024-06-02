@@ -1,36 +1,44 @@
 import jwt from 'jsonwebtoken';
 import STATUS_CODES from '../constants/statusCode.js';
-
-
-// 액세스 토큰 생성 함수
-// AccessToken(Payload에 사용자 ID를 포함하고 유효기간이 12시간)을 생성합니다.
-const generateAccessToken = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '12h' });
-};
-
-module.exports = { generateAccessToken };
-
-// .env에 만들고  로그인하는 사람이 함수가져다쓰게 
+import { prisma } from '../utils/prisma.util.js';
+import ErrorHandler from "../utils/customErrorHandler.js";
 
 export const requireAccessToken = async (req, res) => {
     try {
         //인증 정보 파싱 
-        const Authorization = req.cooKie.Authorization;
+        const authorization = req.cooKie.authorization;
 
         //Authorization이 없는경우
+        if (!authorization) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, '인증 정보가 없습니다.')
+        }
 
         //jwt 표준 인증형태와 일치하지 않는 경우
+        const [tokenType, accesstoken] = authorization.split(' ');
+
+        if (!tokenType !== 'Bearer') {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, '지원하는 인증형태가 아닙니다.')
+        }
 
         //AccessToken 없는 경우
+        if (!accesstoken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, 'AccessToken이 없습니다.')
+        }
+        //AccessToken 유효기간이 지난 경우 그밖에 검증에 실패한 경우 
+        const payload = jwt.verify(accesstoken, process.env.ACCESS_SECRET)
 
-        //AccessToken 유효기간이 지난 경우
-
-        // 그밖에 검증에 실패한 경우
+        const user = await prisma.user.findUnique({
+            where: { id: payload.id }
+        })
 
         //payload에 담긴 사용자 id와 일치하는 사용자가 없는 경우
+        if (!user) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, '인증정보와 일치하는 사용자가 없습니다.')
+        }
 
+        // 조회 된 사용자를 req.user에 넣습니다.
 
-
+        req.user = user;
 
 
         next();
