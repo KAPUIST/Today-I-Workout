@@ -5,8 +5,16 @@ import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";
 import postRouter from "./routers/post.router.js";
 import commentRouter from "./routers/comment.router.js";
+<<<<<<< Updated upstream
 
 dotenv.config();
+=======
+import { CustomErrorHandler } from "./middlewares/error.middleware.js";
+import ErrorHandler from "./utils/customErrorHandler.js";
+import { SERVER_PORT } from "./constants/env.constant.js";
+import cookieParser from "cookie-parser";
+import 'dotenv/config';
+>>>>>>> Stashed changes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
