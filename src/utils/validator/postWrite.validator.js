@@ -1,6 +1,6 @@
 import Joi from joi
 import { POST_TYPE } from '../../constants/postType.constant.js'
-import { MEEL_TYPE } from '../../constants/mealType.constant.js';
+import { MEAL_TYPE } from '../../constants/mealType.constant.js';
 
 // 게시글 작성 joi 스키마
 const schema = Joi.object({
@@ -9,7 +9,7 @@ const schema = Joi.object({
     content: Joi.string().min(8).required(),
     dietTitle: Joi.string().optional(),
     kcal: Joi.number().positive().integer().optional(),
-    mealType: Joi.string().void(...object.values(MEEL_TYPE)).optional(),
+    mealType: Joi.string().void(...object.values(MEAL_TYPE)).optional(),
 });
 
 
@@ -18,6 +18,7 @@ const schema = Joi.object({
 export const postWriteValidator = async (req, res, next) => {
     try {
         await schema.validateAsync(req.body);
+        next();
     }catch (error) {
         next(error);
     }

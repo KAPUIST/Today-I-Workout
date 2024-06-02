@@ -17,6 +17,7 @@ const schema = Joi.object({
 export const singUpValidator = async (req, res, next) => {
     try {
         await schema.validateAsync(req.body);
+        next();
     }catch (error) {
         next(error);
     }

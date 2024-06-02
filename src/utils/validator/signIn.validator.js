@@ -12,6 +12,7 @@ const schema = Joi.object({
 export const singInValidator = async (req, res, next) => {
     try {
         await schema.validateAsync(req.body);
+        next();
     }catch (error) {
         next(error);
     }
