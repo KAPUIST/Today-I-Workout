@@ -3,21 +3,23 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
 const router = express.Router();
-const verificationTokens = {}; // 토큰 저장용
 
-// 1. 회원 이메일 설정(nodemailer 이용)
-const tranSporter = nodemailer.createTransport({
-  host: process.env.MEMBER_HOST, // 이메일을 보낼 호스트의 주소
-  port: process.env.MEMBER_PORT, // 이메일을 보낼 때 사용할 포트번호 보통 465(SSL) 사용, 587(TLS) 
-  secure: process.env.MEMBER_PORT == 465, // 포트가  465인 경우에만 secure를 true로 설정한다.
-  auth: {
-    user: process.env.MEMBER_USER, // 사용자 유저
-    pass: process.env.MEMBER_APP_PASS, // 비밀번호
-  },
-});
 
 /** 2. 회원가입 API */
 router.post('/auth/signup', async (req, res, next) => {
+  // 1. 회원 이메일 설정(nodemailer 이용)
+  const tranSporter = nodemailer.createTransport({
+    host: process.env.MEMBER_HOST, // 이메일을 보낼 호스트의 주소
+    port: +process.env.MEMBER_PORT, // 이메일을 보낼 때 사용할 포트번호 보통 465(SSL) 사용, 587(TLS) 
+    secure: false, // 포트가  465인 경우에만 secure를 true로 설정한다.
+    auth: {
+      user: process.env.MEMBER_USER, // 사용자 유저
+      pass: process.env.MEMBER_APP_PASS, // 비밀번호
+    },
+  });
+
+  const verificationTokens = {}; // 토큰 저장용
+  
   try{
   const { email, password, username, currentWeight, goalWeight, exerciseType, intro } = req.body;
 
@@ -51,6 +53,7 @@ router.post('/auth/signup', async (req, res, next) => {
     console.error(error);
     res.status(500).json({error:'서버오류'});
   }
+  
 });
 
 /** 3. 이메일 인증 API */
