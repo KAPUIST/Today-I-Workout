@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
-import STATUS_CODES from '../constants/statusCode.js';
+import STATUS_CODES from '../constants/status.constant.js';
 import { prisma } from '../utils/prisma.util.js';
 import ErrorHandler from "../utils/customErrorHandler.js";
 
-export const requireAccessToken = async (req, res) => {
+export const requireaccessToken = async (req, res, next) => {
     try {
         //인증 정보 파싱 
-        const authorization = req.cooKie.authorization;
+        const authorization = req.cookies.authorization;
 
         //Authorization이 없는경우
         if (!authorization) {
@@ -14,18 +14,18 @@ export const requireAccessToken = async (req, res) => {
         }
 
         //jwt 표준 인증형태와 일치하지 않는 경우
-        const [tokenType, accesstoken] = authorization.split(' ');
+        const [tokenType, accessToken] = authorization.split(' ');
 
         if (!tokenType !== 'Bearer') {
             throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, '지원하는 인증형태가 아닙니다.')
         }
 
-        //AccessToken 없는 경우
-        if (!accesstoken) {
-            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, 'AccessToken이 없습니다.')
+        //accessToken 없는 경우
+        if (!accessToken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, 'accessToken이 없습니다.')
         }
-        //AccessToken 유효기간이 지난 경우 그밖에 검증에 실패한 경우 
-        const payload = jwt.verify(accesstoken, process.env.ACCESS_SECRET)
+        //accessToken 유효기간이 지난 경우 그밖에 검증에 실패한 경우 
+        const payload = jwt.verify(accessToken, process.env.ACCESS_SECRET)
 
         const user = await prisma.user.findUnique({
             where: { id: payload.id }
