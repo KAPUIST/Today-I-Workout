@@ -8,11 +8,13 @@ import commentRouter from "./routers/comment.router.js";
 import { CustomErrorHandler } from "./middlewares/error.middleware.js";
 import ErrorHandler from "./utils/customErrorHandler.js";
 import { SERVER_PORT } from "./constants/env.constant.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
