@@ -40,12 +40,69 @@ router.delete("/posts/:postId", async (req, res, next) => {});
 
 router.patch("/posts/:postId/likes", async (req, res, next) => {});
 
-/** 댓글 생성 API */
+/** 1. 댓글 생성 API */
+router.post("/posts/:postId/comments", async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const { postId } = req.params;
+        const { content } = req.body;
 
-router.post("/posts/:postId/comments", async (req, res, next) => {});
+        // 1-1 게시글이 존재하는지 확인하기
+        const post = await prisma.post.findFirst({
+            where:  {
+                id: postId,
+            },
+        });
 
-/** 댓글 조회 API */
+        // 1-2 게시글이 존재하지 않을때 메시지 반환
+        if (!post) {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST,"게시글이 존재하지 않습니다");
+        }
 
-router.get("/posts/:postId/comments", async (req, res, next) => {});
+        // 1-3 댓글을 데이터베이스에 생성
+        const newComment = await prisma.comment.create({
+            data: {
+                user_id: id,
+                post_id: postId,
+                content: content,
+            },
+        });
+
+        // 1-4 성공했을때 댓글 데이터 반환
+        res.status(STATUS_CODES.CREATED).json({ data: newComment });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/** 2 댓글 조회 API */
+router.get("/posts/:postId/comments", async (req, res, next) => {
+    try {
+        const { postId } = req.params;
+        // 2-1 게시글이 존재하는지 확인
+        const post = await prisma.post.findFirst({
+            where: {
+                id: postId,
+            },
+        });
+        // 2-2 게시글이 존재하지 않을때 메시지 반환
+        if (!post) {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST,"게시글이 존재하지 않습니다");
+        }
+        // 2-3 해당 게시글에 대한 댓글 불러오기
+        const comments = await prisma.comment.findMany({
+            where: {
+                post_id: postId,
+            },
+            orderBy: {
+                created_at: 'desc', // 댓글 생성일시 내림차순 정렬
+            },
+        });
+        // 2-4 성공적으로 불러온 댓글 데이터 반환
+        res.status(STATUS_CODES.OK).json({ data: comments });
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default router;
