@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { EMAIL_SECRET } from "../constants/env.constant.js";
 
 // 액세스 토큰 생성 함수
 // AccessToken(Payload에 사용자 ID를 포함하고 유효기간이 12시간)을 생성합니다.

@@ -15,7 +15,7 @@ const schema = Joi.object({
 });
 
 // 회원가입 유효성 검사 미들웨어
-export const singUpValidator = async (req, res, next) => {
+export const signUpValidator = async (req, res, next) => {
     try {
         await schema.validateAsync(req.body);
         next();
