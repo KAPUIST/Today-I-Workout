@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../utils/prisma/prisma.util.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
@@ -9,8 +9,6 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 
 const router = express.Router();
-const prisma = new PrismaClient();
-const verificationTokens = {}; // 토큰 저장용
 
 /** 2. 회원가입 API 이메일을 발송합니다.*/
 router.post("/auth/signup", signUpValidator, async (req, res, next) => {
