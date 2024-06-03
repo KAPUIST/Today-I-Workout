@@ -1,41 +1,33 @@
 import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType } from "../services/post.service.js";
-import { requireaccessToken } from "../middlewares/auth.middleware.js";
+// import { requireaccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 const router = express.Router();
 
+// 테스트용 미들웨어
+const testMiddleware = (req, res, next) => {
+    req.user = { id: '5ba2c2af-76b2-4585-bbfe-478b477a7fc4' }; // 테스트용 ID 설정
+    next();
+};
+
 /** 게시글 생성 API */
-router.post("/posts", requireaccessToken, postWriteValidator, async (req, res, next) => {
+router.post("/posts", testMiddleware, postWriteValidator, async (req, res, next) => {
     // 제목, 내용을 Request Body(req.body)로 전달 받습니다.
     const { title, content, postType } = req.body;
     try {
-        // // → 제목, 내용 중 하나라도 빠진 경우→ “OO을 입력해 주세요”
-        // if (!title) {
-        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '제목을 입력해 주세요.')
-        // }
-        // if (!content) {
-        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용을 입력해 주세요.')
-        // }
-        // if (!postType) {
-        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용을 입력해 주세요.')
-        // }
-        // // → 내용 글자 수가 8자 보다 짧은 경우 → “내용은 8자 이상 작성해야 합니다.”
-        // if (content.length < 8) {
-        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용은 8자 이상 작성해야 합니다.')
-        // }
         // 사용자 ID는 미들웨어를 통해 req.user에 설정됨
         const { id } = req.user;
 
         // 새로운 게시글 생성
         const newpost = await prisma.post.create({
             data: {
-                userid: id,
+                user_id: id,
                 title,
                 content,
-                postType,
+                post_type: postType,
             }
         });
         // → 게시글 ID, 게시글 ID, 제목, 내용, 생성일시, 수정일시를 반환합니다.
@@ -58,8 +50,42 @@ router.post("/posts", requireaccessToken, postWriteValidator, async (req, res, n
 
 
 /** 나의 게시글 조회 API */
+router.get("/posts/myposts?postType={postType}", testMiddleware, postWriteValidator, async (req, res, next) => {
+    const { postType } = req.query;
+    const { id: userId } = req.user;
 
-router.get("/posts/myposts?postType={postType}", async (req, res, next) => { });
+    try {
+        // if (!postType || !['TIW', 'DIET'].includes(postType)) {
+        //     return res.status(STATUS_CODES.BAD_REQUEST).json({
+        //         message: 'Invalid post type.'
+        //     });
+        // }
+
+        const posts = await prisma.post.findMany({
+            where: {
+                user_id: userId,
+                post_type: postType
+            },
+            orderBy: {
+                created_at: 'desc'
+            }
+        });
+
+        return res.status(STATUS_CODES.OK).json({
+            data: {
+                id: posts.id,
+                title: posts.title,
+                postType: posts.post_type,
+                content: posts.content,
+                createdAt: posts.created_at,
+                updatedAt: posts.updated_at
+            }
+
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 게시글 타입별 조회/ 전체 게시글 조회 API */
 
