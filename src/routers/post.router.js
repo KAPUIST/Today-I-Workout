@@ -109,23 +109,91 @@ router.get("/posts/:postId", async (req, res, next) => {
                 content: true,
                 like_count: true,
                 created_at: true,
-                updated_at: true
+                updated_at: true,
+                diet: {                   // Diet 테이블 관련 데이터 포함
+                    select: {
+                        post_id: true,
+                        diet_title: true,
+                        kcal: true,
+                        meal_type: true
+                    }
+                }
             }
         });
 
         if (!post) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
         }
 
         return res.status(STATUS_CODES.OK).json(post);
     } catch (error) {
-
     } next(error);
 });
 
 /** 게시글 수정 API */
 
-router.patch("/posts/:postId", async (req, res, next) => { });
+router.patch("/posts/:postId", testMiddleware, async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { postId } = req.params;
+    const { title, content, postType } = req.body;
+    try {
+        // → 제목, 자기소개 둘 다 없는 경우 → “수정 할 정보를 입력해 주세요.”
+        if (!title && !content) {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "수정 할 정보를 입력해주세요.")
+        }
+        // → 게시글이 없는 경우 → “게시글이 존재하지 않습니다.”
+        if (!postId) {
+            throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        }
+        // → 현재 로그인 한 사용자가 작성한 이력서만 수정합니다.
+        // → DB에서 이력서 조회 시 이력서 ID, 작성자 ID가 모두 일치해야 합니다.
+        const post = await prisma.post.findFirst({
+            where: {
+                user_id: userId,
+                id: postId
+            },
+            select: {
+                id: true,
+                user_id: true,
+                post_type: true,
+                title: true,
+                content: true,
+                like_count: true,
+                created_at: true,
+                updated_at: true,
+                diet: {                   // Diet 테이블 관련 데이터 포함
+                    select: {
+                        post_id: true,
+                        diet_title: true,
+                        kcal: true,
+                        meal_type: true
+                    }
+                }
+            }
+        });
+        // → 게시글 정보가 없는 경우 → “게시글이 존재하지 않습니다.”
+        if (!post) {
+            throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        }
+        // → DB에서 게시글 정보를 수정합니다.
+        // → 제목, 내용, 포스트타입은 개별 수정이 가능합니다.
+        const updatedpost = await prisma.post.update({
+            where: { id: postId },
+            data: {
+                ...(title && { title }),
+                ...(content && { content }),
+                ...(postType && { post_type: postType }),
+            },
+        });
+        // → 수정 된 게시글 ID, 작성자 ID, 포스트타입, 제목, 내용, 좋아요, 생성일시, 수정일시를 반환합니다.
+        return res.status(STATUS_CODES.OK).json({ data: updatedpost });
+
+
+    } catch (error) {
+        next(error);
+    }
+
+});
 
 /** 게시글 삭제 API */
 
