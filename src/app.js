@@ -1,5 +1,6 @@
 import express from "express";
 import { connectDatabase } from "./utils/prisma/prisma.util.js";
+import { connectDatabase } from "./utils/prisma/prisma.util.js";
 import dotenv from "dotenv";
 import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";
@@ -17,6 +18,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
 app.use("/health", (req, res, next) => {
@@ -27,6 +32,8 @@ app.use(CustomErrorHandler);
 const startServer = async () => {
     try {
         await connectDatabase();
+        app.listen(SERVER_PORT, () => {
+            console.log(`서버가 ${SERVER_PORT}번 포트에서 실행 중입니다.`);
         app.listen(SERVER_PORT, () => {
             console.log(`서버가 ${SERVER_PORT}번 포트에서 실행 중입니다.`);
         });
