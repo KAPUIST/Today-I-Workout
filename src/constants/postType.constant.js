@@ -1,4 +1,4 @@
-export const POST_TYPE= {
+export const POST_TYPE = {
     TIW,
-    DIET,
+    DIET
 };
