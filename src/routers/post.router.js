@@ -2,18 +2,60 @@ import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType } from "../services/post.service.js";
 import { requireaccessToken } from "../middlewares/auth.middleware.js";
+import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
+import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 const router = express.Router();
 
 /** 게시글 생성 API */
-
-router.post("/posts", requireaccessToken, async (req, res, next) => {
+router.post("/posts", requireaccessToken, postWriteValidator, async (req, res, next) => {
+    // 제목, 내용을 Request Body(req.body)로 전달 받습니다.
+    const { title, content, postType } = req.body;
     try {
+        // // → 제목, 내용 중 하나라도 빠진 경우→ “OO을 입력해 주세요”
+        // if (!title) {
+        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '제목을 입력해 주세요.')
+        // }
+        // if (!content) {
+        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용을 입력해 주세요.')
+        // }
+        // if (!postType) {
+        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용을 입력해 주세요.')
+        // }
+        // // → 내용 글자 수가 8자 보다 짧은 경우 → “내용은 8자 이상 작성해야 합니다.”
+        // if (content.length < 8) {
+        //     return ErrorHandler(STATUS_CODES.UNAUTHORIZED, '내용은 8자 이상 작성해야 합니다.')
+        // }
+        // 사용자 ID는 미들웨어를 통해 req.user에 설정됨
+        const { id } = req.user;
 
+        // 새로운 게시글 생성
+        const newpost = await prisma.post.create({
+            data: {
+                userid: id,
+                title,
+                content,
+                postType,
+            }
+        });
+        // → 게시글 ID, 게시글 ID, 제목, 내용, 생성일시, 수정일시를 반환합니다.
+        return res.status(STATUS_CODES.CREATED).json({
+            message: '새로운 게시글이 생성되었습니다.',
+            data: {
+                id: newpost.id,
+                title: newpost.title,
+                postType: newpost.post_type,
+                content: newpost.content,
+                createdAt: newpost.created_at,
+                updatedAt: newpost.updated_at
+            }
+
+        });
     } catch (error) {
         next(error);
     }
 });
+
 
 /** 나의 게시글 조회 API */
 
