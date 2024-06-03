@@ -1,5 +1,5 @@
 import express from "express";
-import { connectDatabase } from "./utils/prisma.util.js";
+import { connectDatabase } from "./utils/prisma/prisma.util.js";
 import dotenv from "dotenv";
 import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";
@@ -8,11 +8,13 @@ import commentRouter from "./routers/comment.router.js";
 import { CustomErrorHandler } from "./middlewares/error.middleware.js";
 import ErrorHandler from "./utils/customErrorHandler.js";
 import { SERVER_PORT } from "./constants/env.constant.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 

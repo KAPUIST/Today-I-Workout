@@ -1,4 +1,4 @@
-import { prisma } from "../utils/prisma.util.js";
+import { prisma } from "../utils/prisma/prisma.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { orderOptions } from "../constants/order.constant.js";
 

@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
 const router = express.Router();
-
-
+const verificationTokens = {}; // 토큰 저장용
+  
 /** 2. 회원가입 API */
 router.post('/auth/signup', async (req, res, next) => {
   // 1. 회원 이메일 설정(nodemailer 이용)
@@ -17,8 +17,6 @@ router.post('/auth/signup', async (req, res, next) => {
       pass: process.env.MEMBER_APP_PASS, // 비밀번호
     },
   });
-
-  const verificationTokens = {}; // 토큰 저장용
   
   try{
   const { email, password, username, currentWeight, goalWeight, exerciseType, intro } = req.body;
