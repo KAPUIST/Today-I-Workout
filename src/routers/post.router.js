@@ -1,8 +1,17 @@
 import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType } from "../services/post.service.js";
+import { liketoggle } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
+import { prisma } from "../utils/prisma/prisma.util.js";
+import { requireaccessToken } from "../middlewares/auth.middleware.js";
 const router = express.Router();
+
+//테스트
+// const testMiddleware = (req, res, next) => {
+//     req.user = { id: "6210fefd-3317-4cf1-adbb-047e8b6b79ce" }; // 테스트용 ID 설정
+//     next();
+// };
 
 /** 게시글 생성 API */
 
@@ -38,7 +47,20 @@ router.delete("/posts/:postId", async (req, res, next) => {});
 
 /** 게시글 좋아요/취소 토글 API */
 
-router.patch("/posts/:postId/likes", async (req, res, next) => {});
+router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) => {
+    console.log(req.params);
+    const { postId } = req.params;
+    const { id: userId } = req.user;
+
+    try {
+        const result = await liketoggle(postId, userId);
+        return res.status(result.status).json({ message: result.message });
+    } catch (error) {
+        return res
+            .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+            .json({ message: "서버 오류가 발생했습니다.", error: error.message });
+    }
+});
 
 /** 댓글 생성 API */
 

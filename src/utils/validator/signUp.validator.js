@@ -9,7 +9,7 @@ const schema = Joi.object({
     goalWeight: Joi.number().positive().required(),
     username: Joi.string().required(),
     exerciseType: Joi.string()
-        .void(...Object.values(EXERCISE_TYPE))
+        .valid(...Object.values(EXERCISE_TYPE))
         .required(),
     intro: Joi.string().required()
 });

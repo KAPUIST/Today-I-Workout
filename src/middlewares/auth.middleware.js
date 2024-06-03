@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import STATUS_CODES from "../constants/status.constant.js";
-import { prisma } from "../utils/prisma.util.js";
+import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 
 export const requireaccessToken = async (req, res, next) => {

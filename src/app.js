@@ -17,10 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
 app.use("/health", (req, res, next) => {
@@ -28,6 +24,7 @@ app.use("/health", (req, res, next) => {
 });
 
 app.use(CustomErrorHandler);
+
 const startServer = async () => {
     try {
         await connectDatabase();
