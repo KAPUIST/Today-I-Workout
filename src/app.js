@@ -1,5 +1,5 @@
 import express from "express";
-import { connectDatabase } from "./utils/prisma.util.js";
+import { connectDatabase } from "./utils/prisma/prisma.util.js";
 import dotenv from "dotenv";
 import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";

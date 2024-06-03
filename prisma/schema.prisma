@@ -37,8 +37,8 @@ model User {
   email    String @unique @map("email")
   password String @map("password")
 
-  created_at DateTime @default(now()) @map("createdAt")
-  updated_at DateTime @updatedAt @map("updatedAt")
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
 
   comment_like CommentLike[]
   comment      Comment[]
@@ -50,13 +50,13 @@ model User {
 }
 
 model UserInfo {
-  user_id        String       @id @map("userId")
-  current_weight Int          @map("currentWeight")
-  goal_weight    Int          @map("goalWeight")
+  user_id        String       @id @map("user_id")
+  current_weight Int          @map("current_weight")
+  goal_weight    Int          @map("goal_weight")
   username       String       @map("username")
-  exercise_type  ExerciseType @map("exerciseType")
+  exercise_type  ExerciseType @map("exercise_type")
   intro          String       @db.Text
-  updated_at     DateTime     @updatedAt @map("updatedAt")
+  updated_at     DateTime     @updatedAt @map("updated_at")
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -65,14 +65,13 @@ model UserInfo {
 
 model Post {
   id         String   @id @default(uuid()) @map("id")
-  user_id    String   @map("userId")
-  post_type  PostType @map("postType")
+  user_id    String   @map("user_id")
+  post_type  PostType @map("post_type")
   title      String   @map("title")
   content    String   @map("content") @db.Text
-  like_count Int      @default(0) @map("likeCount")
-  diet_id    String?  @map("dietId")
-  created_at DateTime @default(now()) @map("createdAt")
-  updated_at DateTime @updatedAt @map("updatedAt")
+  like_count Int      @default(0) @map("like_count")
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
 
   comment   Comment[]
   post_like PostLike[]
@@ -83,10 +82,10 @@ model Post {
 }
 
 model Diet {
-  post_id    String   @id @map("postId")
-  diet_title String   @map("dietTitle")
+  post_id    String   @id @map("post_id")
+  diet_title String   @map("diet_title")
   kcal       Int      @map("kcal")
-  meal_type  MealType @map("mealType")
+  meal_type  MealType @map("meal_type")
 
   post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
@@ -95,8 +94,8 @@ model Diet {
 
 model PostLike {
   id      String @id @default(uuid()) @map("id")
-  user_id String @map("userId")
-  post_id String @map("postId")
+  user_id String @map("user_id")
+  post_id String @map("post_id")
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
@@ -106,12 +105,12 @@ model PostLike {
 
 model Comment {
   id         String   @id @default(uuid()) @map("id")
-  user_id    String   @map("userId")
-  post_id    String   @map("postId")
+  user_id    String   @map("user_id")
+  post_id    String   @map("post_id")
   content    String   @map("content") @db.Text
-  like_count Int      @default(0) @map("likeCount")
-  created_at DateTime @default(now()) @map("createdAt")
-  updated_at DateTime @updatedAt @map("updatedAt")
+  like_count Int      @default(0) @map("like_count")
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
 
   comment_like CommentLike[]
   user         User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -122,8 +121,8 @@ model Comment {
 
 model CommentLike {
   id         String @id @default(uuid()) @map("id")
-  user_id    String @map("userId")
-  comment_id String @map("commentId")
+  user_id    String @map("user_id")
+  comment_id String @map("comment_id")
 
   user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   comment Comment @relation(fields: [comment_id], references: [id], onDelete: Cascade)
