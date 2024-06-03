@@ -12,8 +12,6 @@ const schema = Joi.object({
     mealType: Joi.string().valid(...Object.values(MEAL_TYPE)).optional(),
 });
 
-
-
 // 게시글 작성 유효성 검사 미들웨어
 export const postWriteValidator = async (req, res, next) => {
     try {
@@ -22,7 +20,4 @@ export const postWriteValidator = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-
 };
-
-

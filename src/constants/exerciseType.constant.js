@@ -8,5 +8,5 @@ export const EXERCISE_TYPE = {
     Ballgame,
     Tennis,
     Yoga,
-    MartialArts,
+    MartialArts
 };
