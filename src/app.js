@@ -5,10 +5,11 @@ import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";
 import postRouter from "./routers/post.router.js";
 import commentRouter from "./routers/comment.router.js";
+import errorHandler from "./utils/validator/customErrorHandler.js";
 import { CustomErrorHandler } from "./middlewares/error.middleware.js";
-import ErrorHandler from "./utils/customErrorHandler.js";
 import { SERVER_PORT } from "./constants/env.constant.js";
 import cookieParser from "cookie-parser";
+import STATUS_CODES from "./constants/status.constant.js";
 dotenv.config();
 
 const app = express();
@@ -16,11 +17,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
 app.use("/health", (req, res, next) => {
-    res.status(200).send("ping");
+    res.status(STATUS_CODES.OK).send("ping");
 });
+
 app.use(CustomErrorHandler);
 const startServer = async () => {
     try {
