@@ -50,17 +50,20 @@ router.post("/posts", testMiddleware, postWriteValidator, async (req, res, next)
 
 
 /** 나의 게시글 조회 API */
-router.get("/posts/myposts?postType={postType}", testMiddleware, postWriteValidator, async (req, res, next) => {
+router.get("/posts/myposts", testMiddleware, async (req, res, next) => {
     const { postType } = req.query;
     const { id: userId } = req.user;
 
     try {
-        // if (!postType || !['TIW', 'DIET'].includes(postType)) {
-        //     return res.status(STATUS_CODES.BAD_REQUEST).json({
-        //         message: 'Invalid post type.'
-        //     });
-        // }
+        // 데이터베이스에서 게시글 조회 조건 설정
+        if (postType && !['TIW', 'DIET'].includes(postType)) { //postType이 있을때 TIW인지 DIET인지 검증 || 사용하면 전체조회가 안되는데 if문 2개 쓰면 가능할지도 겹쳐써야하는지 분리해야하는지 잘모르겠슴다
+            return res.status(STATUS_CODES.BAD_REQUEST).json({
+                message: '유효한 postType을 입력해주세요.' // 유효하지 않은 postType일 경우 메세지 출력
+            });
+        }
 
+
+        // 게시글 목록 조회
         const posts = await prisma.post.findMany({
             where: {
                 user_id: userId,
@@ -71,21 +74,13 @@ router.get("/posts/myposts?postType={postType}", testMiddleware, postWriteValida
             }
         });
 
-        return res.status(STATUS_CODES.OK).json({
-            data: {
-                id: posts.id,
-                title: posts.title,
-                postType: posts.post_type,
-                content: posts.content,
-                createdAt: posts.created_at,
-                updatedAt: posts.updated_at
-            }
-
-        });
+        // 조회된 게시글을 반환합니당
+        return res.status(STATUS_CODES.OK).json({ data: posts });
     } catch (error) {
         next(error);
-    }
+    } // 타입별 조회가 가능한데 URL 주소를 변경했습니다. /posts/myposts?postType=DIET 하면 DIET만되고 TIW하면 TIW만 ㅇㅇ 
 });
+
 
 /** 게시글 타입별 조회/ 전체 게시글 조회 API */
 
