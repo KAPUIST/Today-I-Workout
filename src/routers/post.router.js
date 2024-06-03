@@ -96,7 +96,32 @@ router.get("/posts", async (req, res, next) => {
 
 /** 게시글 상세조회 API */
 
-router.get("/posts/:postId", async (req, res, next) => { });
+router.get("/posts/:postId", async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const post = await prisma.post.findFirst({
+            where: { id: id },
+            select: {
+                id: true,
+                user_id: true,
+                post_type: true,
+                title: true,
+                content: true,
+                like_count: true,
+                created_at: true,
+                updated_at: true
+            }
+        });
+
+        if (!post) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
+        }
+
+        return res.status(STATUS_CODES.OK).json(post);
+    } catch (error) {
+
+    } next(error);
+});
 
 /** 게시글 수정 API */
 
