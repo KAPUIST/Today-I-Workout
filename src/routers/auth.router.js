@@ -131,12 +131,12 @@ router.post("/auth/logout", async (req, res, next) => {
         //     },
         // });
         //쿠키에서 리프레시 토큰 제거 (스키마에 refreshToken모델이 없어서 NULL값으로 만드는게 불가능)
-        res.cookie('accessToken', '', { maxAge: 0, httpOnly: true });
-        res.cookie('refreshToken', '', { maxAge: 0, httpOnly: true });
+        res.cookie("accessToken", "", { maxAge: 0, httpOnly: true });
+        res.cookie("refreshToken", "", { maxAge: 0, httpOnly: true });
 
         return res.status(STATUS_CODES.OK).json({
             status: STATUS_CODES.NO_CONTENT,
-            message: "로그아웃 완료",
+            message: "로그아웃 완료"
         });
     } catch (error) {
         next(error);
