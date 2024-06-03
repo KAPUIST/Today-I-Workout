@@ -1,7 +1,7 @@
 import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType } from "../services/post.service.js";
-import { liketoggle } from "../services/post.service.js";
+import { likeToggle } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import { requireaccessToken } from "../middlewares/auth.middleware.js";
@@ -53,7 +53,7 @@ router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) 
     const { id: userId } = req.user;
 
     try {
-        const result = await liketoggle(postId, userId);
+        const result = await likeToggle(postId, userId);
         return res.status(result.status).json({ message: result.message });
     } catch (error) {
         return res

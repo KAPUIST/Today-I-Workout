@@ -20,7 +20,7 @@ export const fetchPostsByPostType = async (postType, orderBy) => {
     return await prisma.post.findMany({ where: { post_type: postType }, orderBy: order });
 };
 
-export const liketoggle = async (postId, userId) => {
+export const likeToggle = async (postId, userId) => {
     try {
         const post = await prisma.post.findUnique({
             where: {
