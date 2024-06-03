@@ -1,12 +1,12 @@
 export const EXERCISE_TYPE = {
-    Cardio,
-    Weight,
-    CrossFit,
-    Pilates,
-    Swimming,
-    Climbing,
-    Ballgame,
-    Tennis,
-    Yoga,
-    MartialArts
+    Cardio: "Cardio",
+    Weight: "Weight",
+    CrossFit: "CrossFit",
+    Pilates: "Pilates",
+    Swimming: "Swimming",
+    Climbing: "Climbing",
+    Ballgame: "Ballgame",
+    Tennis: "Tennis",
+    Yoga: "Yoga",
+    MartialArts: "MartialArts"
 };

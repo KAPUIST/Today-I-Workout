@@ -9,13 +9,13 @@ const schema = Joi.object({
     goalWeight: Joi.number().positive().required(),
     username: Joi.string().required(),
     exerciseType: Joi.string()
-        .void(...Object.values(EXERCISE_TYPE))
+        .valid(...Object.values(EXERCISE_TYPE))
         .required(),
     intro: Joi.string().required()
 });
 
 // 회원가입 유효성 검사 미들웨어
-export const singUpValidator = async (req, res, next) => {
+export const signUpValidator = async (req, res, next) => {
     try {
         await schema.validateAsync(req.body);
         next();
