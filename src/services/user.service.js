@@ -19,3 +19,18 @@ export const getUserInfoByUserId = async (userId) => {
     });
     return userInfo;
 };
+
+export const updateUserInfo = async (userId, userInputData) => {
+    const userInfoData = {
+        current_weight: userInputData.currentWeight,
+        goal_weight: userInputData.goalWeight,
+        username: userInputData.username,
+        exercise_type: userInputData.exerciseType,
+        intro: userInputData.intro
+    };
+
+    return await prisma.userInfo.update({
+        where: { user_id: userId },
+        data: userInfoData
+    });
+};
