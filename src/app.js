@@ -1,11 +1,11 @@
 import express from "express";
-import { connectDatabase } from "./utils/prisma.util.js";
+import { connectDatabase } from "./utils/prisma/prisma.util.js";
 import dotenv from "dotenv";
 import authRouter from "./routers/auth.router.js";
 import userRouter from "./routers/user.router.js";
 import postRouter from "./routers/post.router.js";
 import commentRouter from "./routers/comment.router.js";
-import errorHandler from './utils/validator/customErrorHandler.js';
+import errorHandler from "./utils/validator/customErrorHandler.js";
 import CustomErrorHandler from "./middlewares/error.middleware.js";
 import { SERVER_PORT } from "./constants/env.constant.js";
 import cookieParser from "cookie-parser";
@@ -19,21 +19,9 @@ app.use(cookieParser());
 
 app.use("/", [authRouter, userRouter, postRouter, commentRouter]);
 
-
-
 app.use("/health", (req, res, next) => {
     res.status(STATUS_CODES.OK).send("ping");
 });
-
-app.use((err, req, res, next) => {
-    if (err instanceof CustomErrorHandler) {
-        res.status(err.status).json({ message: err.message });
-    } else {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: '서버 내부 오류' });
-    }
-});
-
-app.use(errorHandler);
 
 app.use(CustomErrorHandler);
 const startServer = async () => {
