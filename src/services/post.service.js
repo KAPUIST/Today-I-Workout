@@ -52,6 +52,7 @@ export const createNewComment = async (id, postId, content) => {
     });
     return newComment;
 };
+};
 
 export const likeToggle = async (postId, userId) => {
     const post = await prisma.post.findUnique({
