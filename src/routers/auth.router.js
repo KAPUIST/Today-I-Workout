@@ -89,7 +89,10 @@ router.post("/auth/logout", async (req, res, next) => {
         res.cookie("accessToken", "", { maxAge: 0, httpOnly: true });
         res.cookie("refreshToken", "", { maxAge: 0, httpOnly: true });
 
-        throw new ErrorHandler(STATUS_CODES.NO_CONTENT, "로그아웃 완료");
+        return res.status(STATUS_CODES.NO_CONTENT).json({
+            status: STATUS_CODES.NO_CONTENT,
+            message: "로그인 완료",
+        })
     } catch (error) {
         next(error);
     }
