@@ -48,7 +48,8 @@ router.delete("/posts/:postId", async (req, res, next) => {});
 /** 게시글 좋아요/취소 토글 API */
 
 router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) => {
-    console.log(req.params);
+    // console.log(req.params);
+    // console.log(req.user);
     const { postId } = req.params;
     const { id: userId } = req.user;
 
@@ -56,9 +57,7 @@ router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) 
         const result = await likeToggle(postId, userId);
         return res.status(result.status).json({ message: result.message });
     } catch (error) {
-        return res
-            .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-            .json({ message: "서버 오류가 발생했습니다.", error: error.message });
+        next(error);
     }
 });
 

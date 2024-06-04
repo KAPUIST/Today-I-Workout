@@ -1,6 +1,6 @@
 import { MEMBER_APP_PASS, MEMBER_HOST, MEMBER_PORT, MEMBER_USER } from "../constants/env.constant.js";
 import nodemailer from "nodemailer";
-
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js";
 import bcrypt from "bcrypt";
 import { generateEmailAccessToken } from "../utils/jwt.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
@@ -71,4 +71,37 @@ const hashPassword = async (password) => {
     } catch (error) {
         throw new ErrorHandler(STATUS_CODES.INTERNAL_SERVER_ERROR, "에러가 발생했습니다.");
     }
+};
+
+export const loginUser = async (email, password) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+    console.log(user);
+
+    if (!user) {
+        throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증 정보가 유효하지 않습니다.");
+    }
+
+    // const isPasswordMatched =
+    //     user && bcrypt.compareSync(password, user.password);
+
+    // if (!isPasswordMatched) {
+    //     return res.status(STATUS_CODES.UNAUTHORIZED).json({
+    //         status: STATUS_CODES.UNAUTHORIZED,
+    //         message: "인증 정보가 유효하지 않습니다.",
+    //     });
+    // }
+
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    // res.cookie("accessToken", accessToken, {});
+    // res.cookie("refreshToken", refreshToken, {});
+
+    return { accessToken, refreshToken };
+
+    // return res.status(STATUS_CODES.OK).json({
+    //     status: STATUS_CODES.OK,
+    //     message: "로그인 완료",
+    //     data: { accessToken, refreshToken }
+    // });
 };
