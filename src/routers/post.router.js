@@ -13,13 +13,8 @@ import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
-import { prisma } from "../utils/prisma/prisma.util.js";
-
-import { requireAccessToken } from "../middlewares/auth.middleware.js";
 
 import { likeToggle } from "../services/post.service.js";
-
-import { requireAccessToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
