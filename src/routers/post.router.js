@@ -3,8 +3,12 @@ import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType, createNewComment } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
+
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
+
 import { likeToggle } from "../services/post.service.js";
-import { requireaccessToken } from "../middlewares/auth.middleware.js";
+
+
 
 const router = express.Router();
 
@@ -48,7 +52,7 @@ router.delete("/posts/:postId", async (req, res, next) => {});
 
 /** 게시글 좋아요/취소 토글 API */
 
-router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) => {
+router.patch("/posts/:postId/likes", requireAccessToken, async (req, res, next) => {
     // console.log(req.params);
     // console.log(req.user);
     const { postId } = req.params;
