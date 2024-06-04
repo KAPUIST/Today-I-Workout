@@ -8,7 +8,9 @@ import {
     fetchMyPosts,
     fetchPostSangsae,
     editPost,
-    deletePost
+    deletePost,
+    fetchPostComments,
+    fetchPostById
 } from "../services/post.service.js";
 import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
@@ -121,7 +123,7 @@ router.patch("/posts/:postId/likes", requireAccessToken, async (req, res, next) 
     // console.log(req.params);
     // console.log(req.user);
     const { postId } = req.params;
-    const { id: userId } = req.user;
+    const userId = req.user.id;
 
     try {
         const result = await likeToggle(postId, userId);
@@ -131,9 +133,6 @@ router.patch("/posts/:postId/likes", requireAccessToken, async (req, res, next) 
     }
 });
 
-/** 댓글 생성 API */
-
-router.post("/posts/:postId/comments", async (req, res, next) => {});
 /** 1. 댓글 생성 API */
 router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next) => {
     try {
@@ -142,11 +141,7 @@ router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next
         const { content } = req.body;
 
         // 1-1 게시글이 존재하는지 확인하기
-        const post = await prisma.post.findFirst({
-            where: {
-                id: postId
-            }
-        });
+        const post = await fetchPostById(postId);
 
         // 1-2 게시글이 존재하지 않을때 메시지 반환
         if (!post) {
@@ -168,32 +163,18 @@ router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next
     }
 });
 
-/** 댓글 조회 API */
-
-router.get("/posts/:postId/comments", async (req, res, next) => {});
 /** 2 댓글 조회 API */
 router.get("/posts/:postId/comments", async (req, res, next) => {
     try {
         const { postId } = req.params;
         // 2-1 게시글이 존재하는지 확인
-        const post = await prisma.post.findFirst({
-            where: {
-                id: postId
-            }
-        });
+        const post = await fetchPostById(postId);
         // 2-2 게시글이 존재하지 않을때 메시지 반환
         if (!post) {
             throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "게시글이 존재하지 않습니다");
         }
         // 2-3 해당 게시글에 대한 댓글 불러오기
-        const comments = await prisma.comment.findMany({
-            where: {
-                post_id: postId
-            },
-            orderBy: {
-                created_at: "desc" // 댓글 생성일시 내림차순 정렬
-            }
-        });
+        const comments = await fetchPostComments(postId);
         // 2-4 성공적으로 불러온 댓글 데이터 반환
         res.status(STATUS_CODES.OK).json({ data: comments });
     } catch (error) {

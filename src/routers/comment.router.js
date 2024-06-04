@@ -12,6 +12,7 @@ import { fetchPostsByPostType } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
+import { updateCommentByCommentId, fetchCommentsById, deleteCommentByCommentId } from "../services/comment.service.js";
 
 const router = express.Router();
 
@@ -22,11 +23,7 @@ router.patch("/comments/:commentId", requireAccessToken, async (req, res, next) 
         const { commentId } = req.params;
         const { content } = req.body;
         // 3-1. 댓글이 존재하는지 확인
-        const comment = await prisma.comment.findFirst({
-            where: {
-                id: commentId
-            }
-        });
+        const comment = await fetchCommentsById(commentId);
         // 3-2. 댓글이 존재하지 않을 때 메시지 반환
         if (!comment) {
             throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "댓글이 존재하지 않습니다");
@@ -36,14 +33,7 @@ router.patch("/comments/:commentId", requireAccessToken, async (req, res, next) 
             throw new ErrorHandler(STATUS_CODES.FORBIDDEN, "권한이 없습니다");
         }
         // 3-4. 댓글 수정
-        const updatedComment = await prisma.comment.update({
-            where: {
-                id: commentId
-            },
-            data: {
-                content: content
-            }
-        });
+        const updatedComment = await updateCommentByCommentId(commentId, content);
         // 3-5. 성공적으로 수정된 댓글 데이터 반환
         res.status(STATUS_CODES.OK).json({ data: updatedComment });
     } catch (error) {
@@ -57,11 +47,7 @@ router.delete("/comments/:commentId", requireAccessToken, async (req, res, next)
         const { id } = req.user;
         const { commentId } = req.params;
         // 4-1. 댓글이 존재하는지 확인
-        const comment = await prisma.comment.findFirst({
-            where: {
-                id: commentId
-            }
-        });
+        const comment = await fetchCommentsById(commentId);
         // 4-2. 댓글이 존재하지 않을 때 메시지 반환
         if (!comment) {
             throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "댓글이 존재하지 않습니다");
@@ -71,13 +57,9 @@ router.delete("/comments/:commentId", requireAccessToken, async (req, res, next)
             throw new ErrorHandler(STATUS_CODES.FORBIDDEN, "권한이 없습니다");
         }
         // 4-4. 댓글 삭제
-        await prisma.comment.delete({
-            where: {
-                id: commentId
-            }
-        });
+        await deleteCommentByCommentId(commentId);
         // 4-5. 성공적으로 삭제되었음을 알린다
-        res.status(STATUS_CODES.NO_CONTENT).json({});
+        res.sendStatus(STATUS_CODES.NO_CONTENT);
     } catch (error) {
         next(error);
     }
@@ -86,9 +68,6 @@ router.delete("/comments/:commentId", requireAccessToken, async (req, res, next)
 /** 댓글 좋아요 / 취소 토글 API */
 
 router.patch("/comments/:commentId/likes", requireAccessToken, async (req, res, next) => {
-    console.log(req.params);
-    console.log(req.user);
-
     const { commentId } = req.params;
     const { id: userId } = req.user;
 

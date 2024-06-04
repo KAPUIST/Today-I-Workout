@@ -3,6 +3,15 @@ import STATUS_CODES from "../constants/status.constant.js";
 import { orderOptions } from "../constants/order.constant.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 
+export const fetchPostById = async (postId) => {
+    const post = await prisma.post.findFirst({
+        where: {
+            id: postId
+        }
+    });
+    return post;
+};
+
 // 게시글 생성 로직
 export const createTIWPost = async (userId, title, content, postType) => {
     // Prisma를 이용해 새로운 게시글을 생성합니다.
@@ -213,7 +222,7 @@ export const deletePost = async (userId, postId) => {
     });
 
     if (!post) {
-        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
+        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "일치하는 게시글이 없습니다.");
     }
 
     // → DB에서 게시글 정보를 삭제합니다.
@@ -222,7 +231,18 @@ export const deletePost = async (userId, postId) => {
     });
     return deletePost;
 };
-
+//댓글 조회
+export const fetchPostComments = async (postId) => {
+    const comments = await prisma.comment.findMany({
+        where: {
+            post_id: postId
+        },
+        orderBy: {
+            created_at: "desc" // 댓글 생성일시 내림차순 정렬
+        }
+    });
+    return comments;
+};
 // 댓글생성 1-3 댓글을 데이터베이스에 생성
 export const createNewComment = async (id, postId, content) => {
     const newComment = await prisma.comment.create({
