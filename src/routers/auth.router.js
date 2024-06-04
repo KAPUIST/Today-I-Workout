@@ -4,11 +4,10 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js"
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
-import ErrorHandler from "../utils/validator/customErrorHandler.js";
+import ErrorHandler from "../utils/customErrorHandler.js";
 import { loginUser } from "../services/auth.service.js";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
-
 import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
 
