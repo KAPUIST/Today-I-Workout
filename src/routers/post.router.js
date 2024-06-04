@@ -8,6 +8,7 @@ import { requireAccessToken } from "../middlewares/auth.middleware.js";
 
 import { likeToggle } from "../services/post.service.js";
 
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
 
 
 const router = express.Router();
