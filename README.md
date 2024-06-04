@@ -202,35 +202,56 @@ remote `[issue별 자동 생성 브랜치명]` branch로 push
 
 ## 📂 프로젝트 구성
 
-- src
-  - crewDetail
-    - [crewCard.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/crewDetail/crewCard.js)
-    - [movieDetail.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/crewDetail/movieDetail.js)
-  - modal
-    - [modal.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/modal/modal.js)
-  - pagination
-    - [pagination.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/pagination/pagination.js)
-  - review
-    - [review.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/review/review.js)
-  - search
-    - [search.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/search/search.js)
-  - tmdb-api
-    - [api.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/tmdb-api/api.js)
-    - [option.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/tmdb-api/option.js)
-  - [main.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/main.js)
-  - [render.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/render.js)
-  - [similarMovies.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/similarMovies.js)
-  - [state.js](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/src/state.js)
-- style
-  - [credit.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/credit.css)
-  - [index.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/index.css)
-  - [movieDetail.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/movieDetail.css)
-  - [reset.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/reset.css)
-  - [review.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/review.css)
-  - [similarMoviesStyle.css](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/style/similarMoviesStyle.css)
-- [credit.html](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/credit.html)
-- [index.html](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/index.html)
-- [movieDetail.html](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/movieDetail.html)
+### 폴더 구조
+
+```markdown
+node_modules/
+prisma/
+└── schema.prisma
+📦src
+ ┣ 📂constants
+ ┃ ┣ 📜env.constant.js
+ ┃ ┣ 📜exerciseType.constant.js
+ ┃ ┣ 📜mealType.constant.js
+ ┃ ┣ 📜order.constant.js
+ ┃ ┣ 📜postType.constant.js
+ ┃ ┗ 📜status.constant.js
+ ┣ 📂middlewares
+ ┃ ┣ 📜auth.middleware.js
+ ┃ ┗ 📜error.middleware.js
+ ┣ 📂routers
+ ┃ ┣ 📜auth.router.js
+ ┃ ┣ 📜comment.router.js
+ ┃ ┣ 📜post.router.js
+ ┃ ┗ 📜user.router.js
+ ┣ 📂services
+ ┃ ┣ 📜auth.service.js
+ ┃ ┣ 📜comment.service.js
+ ┃ ┣ 📜passwordChange.service.js
+ ┃ ┣ 📜post.service.js
+ ┃ ┗ 📜user.service.js
+ ┣ 📂utils
+ ┃ ┣ 📂prisma
+ ┃ ┃ ┣ 📜prisma.seed.js
+ ┃ ┃ ┗ 📜prisma.util.js
+ ┃ ┣ 📂validator
+ ┃ ┃ ┣ 📜conmentWrite.validator.js
+ ┃ ┃ ┣ 📜passwordChange.validator.js
+ ┃ ┃ ┣ 📜postWrite.validator.js
+ ┃ ┃ ┣ 📜signIn.validator.js
+ ┃ ┃ ┣ 📜signUp.validator.js
+ ┃ ┃ ┗ 📜updateUser.validator.js
+ ┃ ┣ 📜customErrorHandler.js
+ ┃ ┗ 📜jwt.util.js
+ ┗ 📜app.js
+.env
+.gitignore
+.prettierrc
+package-lock.json
+package.json
+README.md
+yarn.lock
+```
 
 ## ✨ 사용 기술
   ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
