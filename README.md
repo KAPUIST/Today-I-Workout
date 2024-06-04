@@ -151,55 +151,6 @@ remote `[issue별 자동 생성 브랜치명]` branch로 push
 
 ### 🚀 Landing Page
 
-`랜딩페이지 상단`  
-<img src="assets/image-2.png" width="700" height="400">
-
-`랜딩페이지 중단`  
-<img src="assets/image-7.png" width="500" height="400">
-
-`랜딩페이지 하단`  
-<img src="assets/image-8.png" width="500" height="400">
-
-- `MOVOLLEH` 버튼 : 홈페이지 새로고침
-- `Credit` 버튼 : 팀 프로젝트 및 팀원 소개 페이지 이동
-- `검색` 버튼 : 검색 내용을 포함하는 영화 제목 검색
-  - 검색 후 동적 페이지네이션 기능으로 다른 페이지 이동 가능
-- `인기영화 볼래?` : 인기 순으로 영화 정렬 및 더보기 기능
-- `최신영화 볼래?` : 최신 순으로 영화 정렬 및 더보기 기능
-- `최고평점 영화 볼래?` : 최고평점 순으로 영화 정렬 및 더보기 기능
-  - 우측 스크롤 시 더보기 가능
-
-### 😎 Credit Page
-
-`팀 프로젝트 및 팀원 소개 페이지`  
-![alt text](assets/image-6.png)
-
-- `View out GitHub Repository` : 웹페이지 배포 레포지토리 접근
-- `Check out the Live Project` : 웹페이지 배포 링크 접근
-- `Blog` 및 `Github` : 각 팀원의 블로그 및 깃허브 계정 접근
-
-### 🧾 Description Page
-
-`상세 페이지 상단`  
-![alt text](assets/image-3.png)
-
-`상세 페이지 하단`  
-![alt text](assets/image-4.png)
-
-- `ANVOLLEH` 버튼 : 랜딩 페이지 복귀
-- 리뷰 `작성` 버튼 : 기입된 리뷰 내용과 별점을 localStorage에 저장후 출력
-  - Validation Check
-    1. 리뷰 내용 공백 불가
-    2. 별점 미선택 불가
-    3. 기존 리뷰와 동일한 작성자명 불가
-    4. 공백 or 숫자로만 구성된 이름 불가
-    5. 비밀번호 8자 이상, 숫자 및 특수문자 포함 필수
-- 리뷰 `수정` 버튼 : 기입된 리뷰 내용, 별점 수정 이후 비밀번호를 검증하여 localStorage에 재저장후 출력
-  - Validation Check
-    1. 리뷰 내용 공백 불가
-    2. 별점 미선택 불가
-- `6개 더볼래?` 좌우측 화살표 버튼 : 상세 페이지 영화 기반 추천 영화 리스트 인기도 순 출력 및 더보기 가능
-
 ## 📂 프로젝트 구성
 
 ### 폴더 구조
@@ -260,6 +211,7 @@ yarn.lock
   ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
   ![Nodemailer](https://img.shields.io/badge/Nodemailer-2D3748?style=for-the-badge&logo=Nodemailer&logoColor=black)
   ![AWS](https://img.shields.io/badge/AWS-2D3748?style=for-the-badge&logo=AWS&logoColor=black)
+  ![Figma](https://img.shields.io/badge/Figma-2D3748?style=for-the-badge&logo=AWS&logoColor=black)
 
 ## 🔗 참고자료
 
