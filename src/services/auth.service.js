@@ -81,15 +81,15 @@ export const loginUser = async (email, password) => {
         throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증 정보가 유효하지 않습니다.");
     }
 
-    // const isPasswordMatched =
-    //     user && bcrypt.compareSync(password, user.password);
+    const isPasswordMatched =
+        user && bcrypt.compareSync(password, user.password);
 
-    // if (!isPasswordMatched) {
-    //     return res.status(STATUS_CODES.UNAUTHORIZED).json({
-    //         status: STATUS_CODES.UNAUTHORIZED,
-    //         message: "인증 정보가 유효하지 않습니다.",
-    //     });
-    // }
+    if (!isPasswordMatched) {
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({
+            status: STATUS_CODES.UNAUTHORIZED,
+            message: "인증 정보가 유효하지 않습니다.",
+        });
+    }
 
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
