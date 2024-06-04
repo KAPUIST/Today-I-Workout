@@ -93,10 +93,7 @@ export const loginUser = async (email, password) => {
     const isPasswordMatched = user && bcrypt.compareSync(password, user.password);
 
     if (!isPasswordMatched) {
-        return res.status(STATUS_CODES.UNAUTHORIZED).json({
-            status: STATUS_CODES.UNAUTHORIZED,
-            message: "인증 정보가 유효하지 않습니다."
-        });
+        throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증 정보가 유효하지 않습니다.");
     }
 
     const { accessToken, refreshToken } = await createToken(user.id);
@@ -112,3 +109,11 @@ export const loginUser = async (email, password) => {
     //     data: { accessToken, refreshToken }
     // });
 };
+
+// export const verifyrefreshToken = (token) => {
+//     try {
+//         return jwt.verify(token, process.env.ACCESS_SECRET);
+//     } catch (error) {
+//         throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+//     }
+// };

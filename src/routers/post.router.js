@@ -3,8 +3,13 @@ import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType, createNewComment } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
-import { likeToggle } from "../services/post.service.js";
+
 import { requireAccessToken } from "../middlewares/auth.middleware.js";
+
+import { likeToggle } from "../services/post.service.js";
+
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
+
 
 const router = express.Router();
 
