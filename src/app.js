@@ -23,6 +23,7 @@ app.use("/health", (req, res, next) => {
 });
 
 app.use(CustomErrorHandler);
+
 const startServer = async () => {
     try {
         await connectDatabase();

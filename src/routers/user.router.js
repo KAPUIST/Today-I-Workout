@@ -4,6 +4,8 @@ import { getUserInfoByUserId, updateUserInfo } from "../services/user.service.js
 import ErrorHandler from "../utils/customErrorHandler.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { updateUserInfoValidator } from "../utils/validator/updateUser.validator.js";
+import { passwordChangeService } from "../services/passwordChange.service.js";
+import { passwordChangeValidator } from "../utils/validator/passwordChange.validator.js";
 
 const router = express.Router();
 
@@ -22,8 +24,7 @@ router.get("/users/me", requireAccessToken, async (req, res, next) => {
 });
 
 /** 비밀번호 변경 API */
-
-router.patch("/users/me/password", async (req, res, next) => {});
+router.patch("/users/me/password", requireAccessToken, passwordChangeService, passwordChangeValidator);
 
 /** 내 정보 수정 API */
 router.patch("/users/me", requireAccessToken, updateUserInfoValidator, async (req, res, next) => {
