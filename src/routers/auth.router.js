@@ -1,6 +1,5 @@
 import express from "express";
-import { prisma } from "../utils/prisma/prisma.util.js";
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt.util.js";
+import { verifyRefreshToken } from "../utils/jwt.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
@@ -75,7 +74,7 @@ router.post("/auth/signin", signInValidator, async (req, res, next) => {
 });
 
 /** 로그아웃 API */
-router.post("/auth/logout", async (req, res, next) => {
+router.post("/auth/logout", requireAccessToken, async (req, res, next) => {
     try {
         //리프레시 토큰을 제거 혹은 NULL값으로 이코드는 NULL값으로 만듬
         // const user = req.user;

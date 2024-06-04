@@ -4,49 +4,44 @@ import { orderOptions } from "../constants/order.constant.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 
 // 게시글 생성 로직
-export const createPost = async (userId, title, content, postType, dietInfo) => {
+export const createTIWPost = async (userId, title, content, postType) => {
     // Prisma를 이용해 새로운 게시글을 생성합니다.
     const newPost = await prisma.post.create({
         data: {
             user_id: userId,
-            // title이 없으면 dietTitle을 사용합니다.
-            title: title || dietInfo.dietTitle,
+            title: title,
             content,
-            post_type: postType,
+            post_type: postType
             // dietInfo가 존재하면 Diet 데이터를 함께 생성합니다.
-            diet: dietInfo
-                ? {
-                      create: {
-                          // dietTitle이 없으면 title을 사용합니다.
-                          diet_title: dietInfo.dietTitle || title,
-                          kcal: dietInfo.kcal || 0,
-                          meal_type: dietInfo.mealType || "Breakfast" // 기본값 설정
-                      }
-                  }
-                : undefined
-        },
-        // 생성된 게시글에 Diet 정보가 포함합니다.
-        include: {
-            diet: true
         }
     });
 
     // 생성된 게시글 정보를 반환
-    return {
-        id: newPost.id,
-        title: newPost.title,
-        postType: newPost.post_type,
-        content: newPost.content,
-        createdAt: newPost.created_at,
-        updatedAt: newPost.updated_at,
-        diet: newPost.diet
-            ? {
-                  dietTitle: newPost.diet.diet_title,
-                  kcal: newPost.diet.kcal,
-                  mealType: newPost.diet.meal_type
-              }
-            : null
-    };
+    return newPost;
+};
+export const createDIETPost = async (userId, title, content, postType, dietInfo) => {
+    // Prisma를 이용해 새로운 게시글을 생성합니다.
+    const result = await prisma.$transaction(async (tx) => {
+        const newPost = await tx.post.create({
+            data: {
+                user_id: userId,
+                title: title,
+                content,
+                post_type: postType,
+                diet: {
+                    create: {
+                        diet_title: dietInfo.dietTitle,
+                        kcal: dietInfo.kcal,
+                        meal_type: dietInfo.mealType
+                    }
+                }
+            },
+            include: { diet: true }
+        });
+
+        return newPost;
+    });
+    return result;
 };
 // 나의 게시글 조회 로직
 export const fetchMyPosts = async (userId, postType, orderBy) => {

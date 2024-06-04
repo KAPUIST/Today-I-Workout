@@ -9,11 +9,12 @@ const schema = Joi.object({
         .valid(...Object.values(POST_TYPE))
         .required(),
     content: Joi.string().min(8).required(),
-    dietTitle: Joi.string(),
-    kcal: Joi.number().positive().integer().optional(),
+    dietTitle: Joi.string().when("postType", { is: "DIET", then: Joi.required() }),
+    kcal: Joi.number().positive().integer().optional().when("postType", { is: "DIET", then: Joi.required() }),
     mealType: Joi.string()
         .valid(...Object.values(MEAL_TYPE))
         .optional()
+        .when("postType", { is: "DIET", then: Joi.required() })
 })
     .or("title", "dietTitle")
     .messages({

@@ -3,7 +3,8 @@ import STATUS_CODES from "../constants/status.constant.js";
 import {
     fetchPostsByPostType,
     createNewComment,
-    createPost,
+    createTIWPost,
+    createDIETPost,
     fetchMyPosts,
     fetchPostSangsae,
     editPost,
@@ -29,25 +30,19 @@ router.post("/posts", requireAccessToken, postWriteValidator, async (req, res, n
     const { title, content, postType, dietTitle, kcal, mealType } = req.body;
     try {
         // 로그인한 친구의 ID를 가져옵니다.
-        const { id: userId } = req.user;
-
-        // dietTitle, kcal, mealType 중 하나라도 존재하면 dietInfo 출력합니다.
-        const dietInfo =
-            dietTitle || kcal || mealType
-                ? {
-                      dietTitle,
-                      kcal,
-                      mealType
-                  }
-                : null;
-
-        // 새로운 게시글을 생성
-        const newPostData = await createPost(userId, title, content, postType, dietInfo);
-
-        // 생성된 게시글 정보를 반환
-        return res.status(STATUS_CODES.CREATED).json({
-            message: "새로운 게시글이 생성되었습니다.",
-            data: newPostData
+        const userId = req.user.id;
+        let post;
+        console.log(postType);
+        if (postType === "TIW") {
+            post = await createTIWPost(userId, title, content, postType);
+        } else if (postType === "DIET") {
+            const dietInfo = { dietTitle, kcal, mealType };
+            post = await createDIETPost(userId, title, content, postType, dietInfo);
+        } else {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "게시물 타입을 확인할 수 없습니다.");
+        }
+        res.status(STATUS_CODES.CREATED).json({
+            data: post
         });
     } catch (error) {
         next(error);
