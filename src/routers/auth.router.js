@@ -1,5 +1,4 @@
 import express from "express";
-import bcrypt from "bcrypt";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
@@ -9,6 +8,10 @@ import ErrorHandler from "../utils/validator/customErrorHandler.js";
 import { loginUser } from "../services/auth.service.js";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
+
+import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
+import { verifyEmailAccessToken } from "../utils/jwt.util.js";
+
 
 const router = express.Router();
 
