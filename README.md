@@ -12,7 +12,7 @@
 
 ### Minutes of meeting
 
-- [S.A](https://www.notion.so/teamsparta/Five-Is-30cd86fa2e144752a58d2b8664cb0979)
+- [S.A 페이지](https://www.notion.so/teamsparta/Five-Is-30cd86fa2e144752a58d2b8664cb0979)
 - [팀 프로젝트 회의록 링크](https://teamsparta.notion.site/0dfaae18a1bb483482781b8c32aef644)
 - [팀 프로젝트 대본 링크](아마도 생성 예정)
 - [팀 프로젝트 ppt 링크](아마도 생성 예정)
@@ -132,7 +132,7 @@ git commit -m “[Fix] - 엑세스 토큰 검증 로직 일부 변경”
 
 ### GitHub branch & Pull Request Rules
 
-![Untitled (1).png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/f4167501-2135-4844-88c3-e57a74c2605b/Untitled_(1).png)
+![Untitled_(1)](https://github.com/KAPUIST/Today-I-Workout/assets/166491440/915ab647-3475-44ac-ab3b-d659cb8fcbef)
 
 1. remote `dev` branch에서 local `dev` branch로 pull
 2. Github Issue 생성 이후 `[issue별 자동 생성 브랜치명]` branch 생성
@@ -209,21 +209,15 @@ yarn.lock
   ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
   ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
   ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
-  ![Nodemailer](https://img.shields.io/badge/Nodemailer-2D3748?style=for-the-badge&logo=Nodemailer&logoColor=black)
+  ![Nodemailer](https://img.shields.io/badge/Nodemailer-2D3748?style=for-the-badge&logo=nodemailer&logoColor=white)
   ![AWS](https://img.shields.io/badge/AWS-2D3748?style=for-the-badge&logo=AWS&logoColor=black)
   ![Figma](https://img.shields.io/badge/Figma-2D3748?style=for-the-badge&logo=AWS&logoColor=black)
 
 ## 🔗 참고자료
 
-- [TMDB Now Playing API](https://developer.themoviedb.org/reference/movie-now-playing-list)
-- [TMDB Popular API](https://developer.themoviedb.org/reference/movie-popular-list)
-- [TMDB Top Rated API](https://developer.themoviedb.org/reference/movie-top-rated-list)
-- [TMDB Details API](https://developer.themoviedb.org/reference/movie-details)
-- [TMDB Credits API](https://developer.themoviedb.org/reference/movie-credits)
-- [TMDB Similar API](https://developer.themoviedb.org/reference/movie-similar)
+- [Nodemailer](https://nodemailer.com/)
+- [DASHIN](https://www.dietshin.com/calorie/calorie_main.asp)
 
 ## 👨‍👨‍👦‍👦 프로젝트 제작 인원
 
-<table>
-![aaaazzzz](https://github.com/KAPUIST/Today-I-Workout/assets/166491440/6229469d-4c50-4cd9-80fa-aae19235b492)
-</table>
+![aaaazzzz](https://github.com/KAPUIST/Today-I-Workout/assets/166491440/9e15be39-a385-454d-a52c-4a082b528fcc)
