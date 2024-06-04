@@ -4,63 +4,148 @@
 
 - [배포 웹사이트 링크](아직없는데 채워 넣을 예정)
 
+- [API 명세서 링크](https://teamsparta.notion.site/API-Five-is-Today-I-Workout-867ce70ab63c4c498dd8313df03dcdb4)
+
+- [ERD 링크](https://drawsql.app/teams/josaw/diagrams/today-i-workout)
+
 ## 📜 프로젝트 기획 및 설계
 
 ### Minutes of meeting
 
 - [S.A](https://www.notion.so/teamsparta/Five-Is-30cd86fa2e144752a58d2b8664cb0979)
-- [팀 프로젝트 회의록 링크](https://spiffy-geometry-22c.notion.site/ef57f9c2d7944966b6c93b122443477e)
-- [팀 프로젝트 대본 링크](https://drive.google.com/file/d/11_R504OA4VRHk2Fqb26lR_6jou-vqui6/view?usp=drive_link)
-- [팀 프로젝트 ppt 링크](https://drive.google.com/file/d/10cWQpLjBXfKnODRAZiD6YYZt8tijxFgC/view?usp=drive_link)
-
-### TMDB API
-
-- TMDB open API 사용 이유
-  - 간단하게 사용했던 기존 API에서 다른 API를 사용하며 전체적인 기능을 고루 사용하기 위함
+- [팀 프로젝트 회의록 링크](https://teamsparta.notion.site/0dfaae18a1bb483482781b8c32aef644)
+- [팀 프로젝트 대본 링크](아마도 생성 예정)
+- [팀 프로젝트 ppt 링크](아마도 생성 예정)
 
 ### Wireframe
 
-![alt text](assets/image-9.png)
+![alt text](사진나오면 등록예정)
 
 - 웹 기반 UI/UX 협업 툴, Figma 사용
-- [Figma 협업 링크](https://www.figma.com/file/s9buq5bmNj29GUb6YuMWEZ/Untitled?type=design&node-id=17-39&mode=design&t=ztDeOEphbsYTa3nz-0)
+- [Figma 협업 링크](피그마 링크 나오면 등록)
 
 ### Code Convention
 
-- `.prettierrc` 및 `reset.css` 사용 협업
-- 변수 / 함수명 지정
-  - Camel Case 사용 : `makeCard`
-  - 변수명에 축약어 사용 금지 : `Del(x) Delete(o)`
-  - DOM API 변수명과 클래스명 통일 : `const modal = document.querySelector(".modal")`
-  - 변수명은 명사, 함수명은 동사 사용
-  - 함수 작성 시 상단 주석 필수
-  - 변수 / 함수명 20자 이내
-- Scope 규칙
-  - tap depth 길이 최대 4
-  - 중괄호 앞 공백 추가
-  - 조건문 끝 처리는 else if 사용 지양
-  - Promise 사용 지양 및 async, await 사용 권장
-- 주석 규칙
-  - 한줄 `//`, 두줄 `/* */` 사용
+### **Naming Rules**
+
+- Prisma Model 네이밍 규칙
+    - model 파스칼 케이스
+    - 데이터베이스 테이블 명 스네이크 케이스
+    - mySQL 컬럼명 스네이크 케이스
+    - ES6 모듈 시스템 변수명 파스칼 케이스
+        
+        ```jsx
+        // 단, express, prisma는 전부 소문자 사용
+        import express from 'express';
+        import { prisma } from '../utils/prisma/index.js';
+        import { PrismaClient } from '@prisma/client';
+        ```
+        
+    - JavaScript 컬럼명 카멜 케이스
+    
+    ```jsx
+    model Post {
+      postId Int @id @default(autoincrement()) @map("post_id")
+      title String @map("title")
+      content String @map("content") @db.Text
+      password String @map("password")
+    
+      createdAt DateTime @default(now()) @map("created_at")
+      updatedAt DateTime @updatedAt @map("updated_at")
+    
+      @@map("post")
+    }
+    
+    ```
+    
+
+### 변수명 / 함수명 지정
+
+1. Camel Case 사용
+2. 기능과 유사한 변수명 / 함수명 작성
+    1. 변수명이 길어지더라도 정확한 역할로 선언
+        
+        `makeCard = () ⇒ {}`
+        
+    2. 약칭 사용 금지
+        
+        `Delete (0) Del (x)`
+        
+3. 변수명은 명사로 작성
+4. 함수명은 동사로 작성
+5. 함수 또는 특정 scope에 대한 자세한 주석 작성
+6. 글자의 길이 : 20자 이내
+
+### 스코프 규칙
+
+```jsx
+{
+  "printWidth": 120,
+  "tabWidth": 4,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "bracketSpacing": true,
+  "trailingComma": "none"
+}
+```
+
+1. 최대 tab depth 길이 : 4
+2. 중괄호 앞에 spacebar 1개 추가
+3. else if 사용 지양, else 사용 권장
+4. 비동기 함수 사용
+    1. async, await사용 권장
+
+### 데이터 베이스 네이밍
+
+1. snake Case 사용 
+a. 예) user_id, created_at 
+
+### 주석 규칙
+
+1. 주석 한줄 : `//` 
+2. 주석 2줄 이상 : `/* */`
 
 ### Github Collaboration Rules
 
-<!-- ![팀 프로젝트 협업 규칙](image.png){: width="100" height="100"} -->
-<img src="assets/image.png" width="480" height="280">
+# Github Rules
 
-### Github branch 생성 및 Pull Request 규칙
+### **깃허브 규칙**
 
-1️⃣ `remote dev branch`에서 `local dev branch`로 `pull`  
-2️⃣ Github issue 생성 이후 `[issue별 자동 생성 브랜치명] branch` 생성
+- 모든 기능은 이슈 작성후 해당 이슈에서 브랜치를 생성.
 
-![alt text](assets/image-1.png)
+### Commit 규칙
 
-3️⃣ `local [issue별 자동 생성 브랜치명] branch`에서 기능 구현 완료 후 `remote [issue별 자동 생성 브랜치명] branch`로 add, commit, push  
-4️⃣ `local [issue별 자동 생성 브랜치명] branch`에서 `remote dev branch`로 pull  
-5️⃣ `local [issue별 자동 생성 브랜치명] branch`에서 conflict 해결 후 원격 [issue별 기능 구현] branch로 add, commit, push  
-6️⃣ `local [issue별 자동 생성 브랜치명] branch`에서 원격 dev branch로 pull request
+- 하단 깃헙 커밋 규칙을 참고하여 작성
+git commit -m “[Feature] -  엑세스 토큰 검증 미들웨어 개발”
+- 커밋후 수정사항 발생 시 다시 커밋
+git commit -m “[Fix] - 엑세스 토큰 검증 로직 일부 변경”
 
-- Issue 內 자동 생성 branch 명칭 수정 금지
+### 깃헙 커밋 규칙
+
+| 작업 타입 | 작업내용 |
+| --- | --- |
+| ✨ Update   | 해당 파일에 새로운 기능이 생김 |
+| 🎉 Feature | 없던 파일을 생성함, 초기 세팅, 기능 구현 |
+| ♻️ Refactor | 코드 리팩토링 |
+| 🩹 Fix | 코드 수정 |
+
+### GitHub branch & Pull Request Rules
+
+![Untitled (1).png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/f4167501-2135-4844-88c3-e57a74c2605b/Untitled_(1).png)
+
+1. remote `dev` branch에서 local `dev` branch로 pull
+2. Github Issue 생성 이후 `[issue별 자동 생성 브랜치명]` branch 생성
+3. local `[issue별 자동 생성 브랜치명]` branch 기능 구현 완료 후
+    
+    remote `[issue별 자동 생성 브랜치명]` branch로 push
+    
+4. local `[issue별 자동 생성 브랜치명]` branch에서
+    
+    remote `dev` branch로 pull
+    
+5. local `[issue별 자동 생성 브랜치명]` branch에서 conflict 해결 후
+remote `[issue별 자동 생성 브랜치명]` branch로 push
 
 ## 💻 프로젝트 설명
 
@@ -148,8 +233,12 @@
 - [movieDetail.html](https://github.com/eliotjang/Movolleh-Movie-Website/blob/dev/movieDetail.html)
 
 ## ✨ 사용 기술
-
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img  src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img  src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+  ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+  ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+  ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+  ![Nodemailer](https://img.shields.io/badge/Nodemailer-2D3748?style=for-the-badge&logo=Nodemailer&logoColor=black)
+  ![AWS](https://img.shields.io/badge/AWS-2D3748?style=for-the-badge&logo=AWS&logoColor=black)
 
 ## 🔗 참고자료
 
@@ -163,13 +252,5 @@
 ## 👨‍👨‍👦‍👦 프로젝트 제작 인원
 
 <table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/eliotjang"><img src="https://ca.slack-edge.com/T06B9PCLY1E-U06UASA7JE8-9f39c84302c0-512" width="100px;" alt="장성원"/><br /><sub><b> 팀장 : 장성원 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/9r3dflam3"><img src="https://ca.slack-edge.com/T06B9PCLY1E-U06UH5H6ASC-184194feba5f-51" width="100px;" alt="구남욱"/><br /><sub><b> 팀원 : 구남욱 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/CDR4733"><img src="https://ca.slack-edge.com/T06B9PCLY1E-U06LCPXFZPG-711e64fb68c5-512" width="100px;" alt="석한솔"/><br /><sub><b> 팀원 : 석한솔 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/KAPUIST"><img src="https://ca.slack-edge.com/T06B9PCLY1E-U06U0D3HBUZ-0a269006683b-512" width="100px;" alt="손태권"/><br /><sub><b> 팀원 : 손태권 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/xszvvfm"><img src="https://ca.slack-edge.com/T06B9PCLY1E-U06M777LMDW-ge8be5c10c59-192" width="100px;" alt="방채은"/><br /><sub><b> 팀원 : 방채은 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
+![aaaazzzz](https://github.com/KAPUIST/Today-I-Workout/assets/166491440/6229469d-4c50-4cd9-80fa-aae19235b492)
 </table>
