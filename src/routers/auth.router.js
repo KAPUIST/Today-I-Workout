@@ -4,9 +4,14 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js"
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
-import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
+import ErrorHandler from "../utils/validator/customErrorHandler.js";
+import { loginUser } from "../services/auth.service.js";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
+import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
+
 
 const router = express.Router();
 
@@ -46,33 +51,21 @@ router.get("/auth/verification/:token", async (req, res, next) => {
 router.post("/auth/signin", signInValidator, async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(email);
+        console.log(password);
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        console.log(user);
+        const { accessToken, refreshToken } = await loginUser(email, password);
+        // return res.status(result.status).json({ message: result.message });
 
-        if (!user) {
-            return res.status(STATUS_CODES.UNAUTHORIZED).json({
-                status: STATUS_CODES.UNAUTHORIZED,
-                message: "인증 정보가 유효하지 않습니다."
-            });
-        }
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
 
-        // const isPasswordMatched =
-        //     user && bcrypt.compareSync(password, user.password);
-
-        // if (!isPasswordMatched) {
-        //     return res.status(STATUS_CODES.UNAUTHORIZED).json({
-        //         status: STATUS_CODES.UNAUTHORIZED,
-        //         message: "인증 정보가 유효하지 않습니다.",
-        //     });
-        // }
-
-        const accessToken = generateAccessToken(user.id);
-        const refreshToken = generateRefreshToken(user.id);
-
-        res.cookie("accessToken", accessToken, {});
-
-        res.cookie("refreshToken", refreshToken, {});
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
 
         return res.status(STATUS_CODES.OK).json({
             status: STATUS_CODES.OK,
@@ -99,9 +92,9 @@ router.post("/auth/logout", async (req, res, next) => {
         res.cookie("accessToken", "", { maxAge: 0, httpOnly: true });
         res.cookie("refreshToken", "", { maxAge: 0, httpOnly: true });
 
-        return res.status(STATUS_CODES.OK).json({
+        return res.status(STATUS_CODES.NO_CONTENT).json({
             status: STATUS_CODES.NO_CONTENT,
-            message: "로그아웃 완료"
+            message: "로그인 완료"
         });
     } catch (error) {
         next(error);
