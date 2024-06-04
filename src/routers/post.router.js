@@ -145,8 +145,8 @@ router.patch("/posts/:postId", testMiddleware, async (req, res, next) => {
         if (!postId) {
             throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
         }
-        // → 현재 로그인 한 사용자가 작성한 이력서만 수정합니다.
-        // → DB에서 이력서 조회 시 이력서 ID, 작성자 ID가 모두 일치해야 합니다.
+        // → 현재 로그인 한 사용자가 작성한 게시글만 수정합니다.
+        // → DB에서 게시글 조회 시 게시글 ID, 작성자 ID가 모두 일치해야 합니다.
         const post = await prisma.post.findFirst({
             where: {
                 user_id: userId,
@@ -197,7 +197,41 @@ router.patch("/posts/:postId", testMiddleware, async (req, res, next) => {
 
 /** 게시글 삭제 API */
 
-router.delete("/posts/:postId", async (req, res, next) => { });
+router.delete("/posts/:postId", testMiddleware, async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { postId } = req.params;
+    try {
+        // → 게시글이 없는 경우 → “게시글이 존재하지 않습니다.”
+        if (!postId) {
+            throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        }
+
+        const post = await prisma.post.findFirst({
+            where: {
+                user_id: userId,
+                id: postId,
+            }
+        });
+
+        if (!post) {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
+        }
+
+        // → DB에서 게시글 정보를 삭제합니다.
+        const deletepost = await prisma.post.delete({
+            where: { id: postId, }
+        });
+
+        // → 삭제 된 게시글 ID를 반환합니다.
+        const result = { postId: deletepost.id, };
+
+        return res.status(STATUS_CODES.OK).json({ data: result });
+
+    } catch (error) {
+    } next(error);
+});
+
+
 
 /** 게시글 좋아요/취소 토글 API */
 
