@@ -51,6 +51,7 @@ export const createNewComment = async (id, postId, content) => {
         }
     });
     return newComment;
+};
 
 export const likeToggle = async (postId, userId) => {
     const post = await prisma.post.findUnique({
@@ -75,6 +76,7 @@ export const likeToggle = async (postId, userId) => {
             }
         }
     });
+
     // like 이미 눌렸는지 아는 함수
     if (!like) {
         // postId와 userId로 새로운 좋아요를 추가
