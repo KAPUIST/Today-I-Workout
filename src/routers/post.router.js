@@ -1,15 +1,21 @@
 import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
-import { fetchPostsByPostType, createNewComment } from "../services/post.service.js";
-import ErrorHandler from "../utils/customErrorHandler.js";
+import {
+    fetchPostsByPostType,
+    createNewComment,
+    createTIWPost,
+    createDIETPost,
+    fetchMyPosts,
+    fetchPostSangsae,
+    editPost,
+    deletePost
+} from "../services/post.service.js";
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
+import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
-
-import { requireAccessToken } from "../middlewares/auth.middleware.js";
-
+import ErrorHandler from "../utils/customErrorHandler.js";
+import { postUpdateValidator } from "../utils/validator/postUpdate.validator.js";
 import { likeToggle } from "../services/post.service.js";
-
-import { requireAccessToken } from "../middlewares/auth.middleware.js";
-
 
 const router = express.Router();
 
@@ -20,17 +26,48 @@ const router = express.Router();
 // };
 
 /** 게시글 생성 API */
+router.post("/posts", requireAccessToken, postWriteValidator, async (req, res, next) => {
+    const { title, content, postType, dietTitle, kcal, mealType } = req.body;
+    try {
+        // 로그인한 친구의 ID를 가져옵니다.
+        const userId = req.user.id;
+        let post;
+        console.log(postType);
+        if (postType === "TIW") {
+            post = await createTIWPost(userId, title, content, postType);
+        } else if (postType === "DIET") {
+            const dietInfo = { dietTitle, kcal, mealType };
+            post = await createDIETPost(userId, title, content, postType, dietInfo);
+        } else {
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "게시물 타입을 확인할 수 없습니다.");
+        }
+        res.status(STATUS_CODES.CREATED).json({
+            data: post
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
-router.post("/posts", async (req, res, next) => {});
+/** 나의 게시글 조회 API */ // 데이터베이스에서 게시글 조회 조건 설정
+router.get("/posts/myposts", requireAccessToken, async (req, res, next) => {
+    const { postType, orderBy } = req.query;
+    const userId = req.user.id;
 
-/** 나의 게시글 조회 API */
-
-router.get("/posts/myposts?postType={postType}", async (req, res, next) => {});
+    try {
+        // 조회된 게시글을 반환합니당
+        const posts = await fetchMyPosts(userId, postType, orderBy);
+        return res.status(STATUS_CODES.OK).json({ data: posts });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 게시글 타입별 조회/ 전체 게시글 조회 API */
 
 router.get("/posts", async (req, res, next) => {
     const { postType, orderBy } = req.query;
+    //postType이 없을경우 예외
     try {
         const posts = await fetchPostsByPostType(postType, orderBy);
         res.status(STATUS_CODES.OK).json({ data: posts });
@@ -41,15 +78,42 @@ router.get("/posts", async (req, res, next) => {
 
 /** 게시글 상세조회 API */
 
-router.get("/posts/:postId", async (req, res, next) => {});
+router.get("/posts/:postId", async (req, res, next) => {
+    const { postId } = req.params;
+    try {
+        const postSangsae = await fetchPostSangsae(postId);
+        res.status(STATUS_CODES.OK).json({ postSangsae });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 게시글 수정 API */
 
-router.patch("/posts/:postId", async (req, res, next) => {});
+router.put("/posts/:postId", requireAccessToken, postUpdateValidator, async (req, res, next) => {
+    const userId = req.user.id;
+    const { postId } = req.params;
+    const userInputData = req.body;
+    try {
+        const updatedPost = await editPost(userId, postId, userInputData);
+        res.status(STATUS_CODES.OK).json({ data: updatedPost });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 게시글 삭제 API */
 
-router.delete("/posts/:postId", async (req, res, next) => {});
+router.delete("/posts/:postId", requireAccessToken, async (req, res, next) => {
+    const userId = req.user.id;
+    const { postId } = req.params;
+    try {
+        const post = await deletePost(userId, postId);
+        res.status(STATUS_CODES.OK).json({ data: post.id });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 게시글 좋아요/취소 토글 API */
 
@@ -67,6 +131,9 @@ router.patch("/posts/:postId/likes", requireAccessToken, async (req, res, next) 
     }
 });
 
+/** 댓글 생성 API */
+
+router.post("/posts/:postId/comments", async (req, res, next) => {});
 /** 1. 댓글 생성 API */
 router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next) => {
     try {
@@ -101,6 +168,9 @@ router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next
     }
 });
 
+/** 댓글 조회 API */
+
+router.get("/posts/:postId/comments", async (req, res, next) => {});
 /** 2 댓글 조회 API */
 router.get("/posts/:postId/comments", async (req, res, next) => {
     try {

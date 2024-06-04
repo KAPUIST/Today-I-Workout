@@ -51,7 +51,6 @@ router.patch("/comments/:commentId", requireAccessToken, async (req, res, next) 
     }
 });
 
-
 /** 4 댓글 삭제 API */
 router.delete("/comments/:commentId", requireAccessToken, async (req, res, next) => {
     try {
