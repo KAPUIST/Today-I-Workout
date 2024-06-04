@@ -1,17 +1,13 @@
 import express from "express";
 import { prisma } from "../utils/prisma/prisma.util.js";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
-import ErrorHandler from "../utils/validator/customErrorHandler.js";
-import { loginUser } from "../services/auth.service.js";
-import nodemailer from "nodemailer";
-import crypto from "crypto";
-
+import ErrorHandler from "../utils/customErrorHandler.js";
+import { createToken, findUserById, loginUser } from "../services/auth.service.js";
 import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
-
 
 const router = express.Router();
 
@@ -100,5 +96,43 @@ router.post("/auth/logout", async (req, res, next) => {
         next(error);
     }
 });
+// 토큰 재발급 api
+router.get("/auth/token", async (req, res, next) => {
+    const token = req.cookies.refreshToken;
 
+    try {
+        if (!token) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+
+        const verifyToken = verifyRefreshToken(token);
+
+        if (!verifyToken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+        const user = await findUserById(verifyToken.id);
+        if (!user) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+        const { accessToken, refreshToken } = await createToken(user.id);
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
+
+        return res.status(STATUS_CODES.OK).json({
+            status: STATUS_CODES.OK,
+            message: "토큰 재발급",
+            data: { accessToken, refreshToken }
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 export default router;

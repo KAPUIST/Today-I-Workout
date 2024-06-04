@@ -9,6 +9,9 @@ import { prisma } from "../utils/prisma/prisma.util.js";
 export const findUserByEmail = async (email) => {
     return await prisma.user.findUnique({ where: { email } });
 };
+export const findUserById = async (userId) => {
+    return await prisma.user.findFirst({ where: { id: userId } });
+};
 export const sendMail = async (userData) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -73,6 +76,12 @@ const hashPassword = async (password) => {
     }
 };
 
+export const createToken = async (userId) => {
+    console.log(userId, "id");
+    const accessToken = generateAccessToken(userId);
+    const refreshToken = generateRefreshToken(userId);
+    return { accessToken, refreshToken };
+};
 export const loginUser = async (email, password) => {
     const user = await prisma.user.findUnique({ where: { email } });
     console.log(user);
@@ -90,8 +99,7 @@ export const loginUser = async (email, password) => {
         });
     }
 
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const { accessToken, refreshToken } = await createToken(user.id);
 
     // res.cookie("accessToken", accessToken, {});
     // res.cookie("refreshToken", refreshToken, {});
