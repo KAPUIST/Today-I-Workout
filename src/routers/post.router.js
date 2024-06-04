@@ -13,7 +13,13 @@ import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
+import { prisma } from "../utils/prisma/prisma.util.js";
+
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
+
 import { likeToggle } from "../services/post.service.js";
+
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -120,7 +126,6 @@ router.delete("/posts/:postId", requireAccessToken, async (req, res, next) => {
 
 /** 게시글 좋아요/취소 토글 API */
 
-router.patch("/posts/:postId/likes", async (req, res, next) => {});
 router.patch("/posts/:postId/likes", requireAccessToken, async (req, res, next) => {
     // console.log(req.params);
     // console.log(req.user);

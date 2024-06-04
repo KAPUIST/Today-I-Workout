@@ -9,6 +9,9 @@ import { prisma } from "../utils/prisma/prisma.util.js";
 export const findUserByEmail = async (email) => {
     return await prisma.user.findUnique({ where: { email } });
 };
+export const findUserById = async (userId) => {
+    return await prisma.user.findFirst({ where: { id: userId } });
+};
 export const sendMail = async (userData) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -73,6 +76,12 @@ const hashPassword = async (password) => {
     }
 };
 
+export const createToken = async (userId) => {
+    console.log(userId, "id");
+    const accessToken = generateAccessToken(userId);
+    const refreshToken = generateRefreshToken(userId);
+    return { accessToken, refreshToken };
+};
 export const loginUser = async (email, password) => {
     const user = await prisma.user.findUnique({ where: { email } });
     console.log(user);
@@ -84,14 +93,10 @@ export const loginUser = async (email, password) => {
     const isPasswordMatched = user && bcrypt.compareSync(password, user.password);
 
     if (!isPasswordMatched) {
-        return res.status(STATUS_CODES.UNAUTHORIZED).json({
-            status: STATUS_CODES.UNAUTHORIZED,
-            message: "인증 정보가 유효하지 않습니다."
-        });
+        throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증 정보가 유효하지 않습니다.");
     }
 
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const { accessToken, refreshToken } = await createToken(user.id);
 
     // res.cookie("accessToken", accessToken, {});
     // res.cookie("refreshToken", refreshToken, {});
@@ -104,3 +109,11 @@ export const loginUser = async (email, password) => {
     //     data: { accessToken, refreshToken }
     // });
 };
+
+// export const verifyrefreshToken = (token) => {
+//     try {
+//         return jwt.verify(token, process.env.ACCESS_SECRET);
+//     } catch (error) {
+//         throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+//     }
+// };

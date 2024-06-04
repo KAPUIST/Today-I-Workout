@@ -1,13 +1,12 @@
 import express from "express";
 import { prisma } from "../utils/prisma/prisma.util.js";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt.util.js";
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
-import { loginUser } from "../services/auth.service.js";
-import nodemailer from "nodemailer";
-import crypto from "crypto";
+import { createToken, findUserById, loginUser } from "../services/auth.service.js";
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
 
@@ -87,16 +86,63 @@ router.post("/auth/logout", async (req, res, next) => {
         //     },
         // });
         //쿠키에서 리프레시 토큰 제거 (스키마에 refreshToken모델이 없어서 NULL값으로 만드는게 불가능)
+
+        const refreshToken = req.cookies.refreshToken;
+        console.log(refreshToken);
+        if (!refreshToken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "로그인 상태가 아닙니다.");
+        }
+
+        // verifyrefreshToken(refreshToken);
+
         res.cookie("accessToken", "", { maxAge: 0, httpOnly: true });
         res.cookie("refreshToken", "", { maxAge: 0, httpOnly: true });
 
         return res.status(STATUS_CODES.NO_CONTENT).json({
             status: STATUS_CODES.NO_CONTENT,
-            message: "로그인 완료"
+            message: "로그아웃 완료"
         });
     } catch (error) {
         next(error);
     }
 });
+// 토큰 재발급 api
+router.get("/auth/token", async (req, res, next) => {
+    const token = req.cookies.refreshToken;
 
+    try {
+        if (!token) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+
+        const verifyToken = verifyRefreshToken(token);
+
+        if (!verifyToken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+        const user = await findUserById(verifyToken.id);
+        if (!user) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "인증정보가 유효하지 않습니다.");
+        }
+        const { accessToken, refreshToken } = await createToken(user.id);
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
+
+        return res.status(STATUS_CODES.OK).json({
+            status: STATUS_CODES.OK,
+            message: "토큰 재발급",
+            data: { accessToken, refreshToken }
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 export default router;
