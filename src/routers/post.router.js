@@ -2,10 +2,17 @@ import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType, createNewComment } from "../services/post.service.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
-import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
+import { likeToggle } from "../services/post.service.js";
+import { requireaccessToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+//테스트
+// const testMiddleware = (req, res, next) => {
+//     req.user = { id: "6210fefd-3317-4cf1-adbb-047e8b6b79ce" }; // 테스트용 ID 설정
+//     next();
+// };
 
 /** 게시글 생성 API */
 
@@ -41,7 +48,19 @@ router.delete("/posts/:postId", async (req, res, next) => {});
 
 /** 게시글 좋아요/취소 토글 API */
 
-router.patch("/posts/:postId/likes", async (req, res, next) => {});
+router.patch("/posts/:postId/likes", requireaccessToken, async (req, res, next) => {
+    // console.log(req.params);
+    // console.log(req.user);
+    const { postId } = req.params;
+    const { id: userId } = req.user;
+
+    try {
+        const result = await likeToggle(postId, userId);
+        return res.status(result.status).json({ message: result.message });
+    } catch (error) {
+        next(error);
+    }
+});
 
 /** 1. 댓글 생성 API */
 router.post("/posts/:postId/comments", requireAccessToken, async (req, res, next) => {
