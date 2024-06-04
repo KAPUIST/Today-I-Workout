@@ -4,29 +4,53 @@ import { orderOptions } from "../constants/order.constant.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
 
 // 게시글 생성 로직
-export const createPost = async (userId, title, content, postType) => {
+export const createPost = async (userId, title, content, postType, dietInfo) => {
+    // Prisma를 이용해 새로운 게시글을 생성합니다.
     const newPost = await prisma.post.create({
         data: {
             user_id: userId,
-            title,
+            // title이 없으면 dietTitle을 사용합니다.
+            title: title || dietInfo.dietTitle,
             content,
             post_type: postType,
+            // dietInfo가 존재하면 Diet 데이터를 함께 생성합니다.
+            diet: dietInfo
+                ? {
+                      create: {
+                          // dietTitle이 없으면 title을 사용합니다.
+                          diet_title: dietInfo.dietTitle || title,
+                          kcal: dietInfo.kcal || 0,
+                          meal_type: dietInfo.mealType || "Breakfast" // 기본값 설정
+                      }
+                  }
+                : undefined
+        },
+        // 생성된 게시글에 Diet 정보가 포함합니다.
+        include: {
+            diet: true
         }
     });
 
+    // 생성된 게시글 정보를 반환
     return {
         id: newPost.id,
         title: newPost.title,
         postType: newPost.post_type,
         content: newPost.content,
         createdAt: newPost.created_at,
-        updatedAt: newPost.updated_at
+        updatedAt: newPost.updated_at,
+        diet: newPost.diet
+            ? {
+                  dietTitle: newPost.diet.diet_title,
+                  kcal: newPost.diet.kcal,
+                  mealType: newPost.diet.meal_type
+              }
+            : null
     };
 };
-
 // 나의 게시글 조회 로직
 export const fetchMyPosts = async (userId, postType, orderBy) => {
-    let order;        //orderBy 값에 따라 정렬 방식을 설정합니다. 
+    let order; //orderBy 값에 따라 정렬 방식을 설정합니다.
     switch (orderBy) {
         case "likes":
             order = orderOptions.likes;
@@ -39,7 +63,8 @@ export const fetchMyPosts = async (userId, postType, orderBy) => {
             order = orderOptions.latest;
             break;
     }
-    if (postType && !['TIW', 'DIET'].includes(postType)) {        //postType이 있을때 TIW인지 DIET인지 검증 타입별 조회 -> posts/myposts?postType=DIET 하면 DIET만되고 TIW하면 TIW만 ㅇㅇ 
+    if (postType && !["TIW", "DIET"].includes(postType)) {
+        //postType이 있을때 TIW인지 DIET인지 검증 타입별 조회 -> posts/myposts?postType=DIET 하면 DIET만되고 TIW하면 TIW만 ㅇㅇ
         throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "유효한 postType을 입력해주세요.");
     }
 
@@ -78,7 +103,8 @@ export const fetchPostSangsae = async (id) => {
             like_count: true,
             created_at: true,
             updated_at: true,
-            diet: {                   // Diet 테이블 관련 데이터 포함
+            diet: {
+                // Diet 테이블 관련 데이터 포함
                 select: {
                     post_id: true,
                     diet_title: true,
@@ -89,11 +115,11 @@ export const fetchPostSangsae = async (id) => {
         }
     });
 
-    if (!post) {
+    if (!id) {
         throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "일치하는 게시글이 없습니다.");
     }
     return post;
-}
+};
 // 게시글 수정 로직
 export const editPost = async (userId, postId, title, content, postType) => {
     // → 현재 로그인 한 사용자가 작성한 게시글만 수정합니다.
@@ -112,7 +138,8 @@ export const editPost = async (userId, postId, title, content, postType) => {
             like_count: true,
             created_at: true,
             updated_at: true,
-            diet: {                   // Diet 테이블 관련 데이터 포함
+            diet: {
+                // Diet 테이블 관련 데이터 포함
                 select: {
                     post_id: true,
                     diet_title: true,
@@ -124,15 +151,11 @@ export const editPost = async (userId, postId, title, content, postType) => {
     });
     // → 제목, 내용 둘 다 없는 경우 → “수정 할 정보를 입력해 주세요.”
     if (!title && !content) {
-        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "수정 할 정보를 입력해주세요.")
-    }
-    // → 게시글이 없는 경우 → “게시글이 존재하지 않습니다.”
-    if (!postId) {
-        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "수정 할 정보를 입력해주세요.");
     }
     // → 게시글 정보가 없는 경우 → “게시글이 존재하지 않습니다.”
     if (!post) {
-        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.");
     }
     // → DB에서 게시글 정보를 수정합니다.
     // → 제목, 내용, 포스트타입은 개별 수정이 가능합니다.
@@ -141,24 +164,24 @@ export const editPost = async (userId, postId, title, content, postType) => {
         data: {
             ...(title && { title }),
             ...(content && { content }),
-            ...(postType && { post_type: postType }),
-        },
+            ...(postType && { post_type: postType })
+        }
     });
     // → 수정 된 게시글 ID, 작성자 ID, 포스트타입, 제목, 내용, 좋아요, 생성일시, 수정일시를 반환합니다.
-    return updatedpost
-}
+    return updatedpost;
+};
 
 // 게시글 삭제 로직
 export const deletePost = async (userId, postId) => {
     // → 게시글이 없는 경우 → “게시글이 존재하지 않습니다.”
     if (!postId) {
-        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.")
+        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.");
     }
 
     const post = await prisma.post.findFirst({
         where: {
             user_id: userId,
-            id: postId,
+            id: postId
         }
     });
 
@@ -168,11 +191,9 @@ export const deletePost = async (userId, postId) => {
 
     // → DB에서 게시글 정보를 삭제합니다.
     const deletepost = await prisma.post.delete({
-        where: { id: postId, }
+        where: { id: postId }
     });
-
-
-    return deletepost
+    return deletepost;
 };
 
 // 댓글생성 1-3 댓글을 데이터베이스에 생성

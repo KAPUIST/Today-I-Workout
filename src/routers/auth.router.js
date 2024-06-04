@@ -11,7 +11,6 @@ import crypto from "crypto";
 import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
 
-
 const router = express.Router();
 
 /** 2. 회원가입 API 이메일을 발송합니다.*/

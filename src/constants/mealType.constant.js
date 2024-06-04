@@ -1,5 +1,5 @@
 export const MEAL_TYPE = {
-    Breakfast: 'Breakfast',
-    Lunch: 'Lunch',
-    Dinner: 'Dinner'
+    Breakfast: "Breakfast",
+    Lunch: "Lunch",
+    Dinner: "Dinner"
 };
