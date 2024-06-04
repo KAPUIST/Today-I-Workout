@@ -21,6 +21,17 @@ export const fetchPostsByPostType = async (postType, orderBy) => {
     return await prisma.post.findMany({ where: { post_type: postType }, orderBy: order });
 };
 
+// 댓글생성 1-3 댓글을 데이터베이스에 생성
+export const createNewComment = async (id, postId, content) => {
+    const newComment = await prisma.comment.create({
+        data: {
+            user_id: id,
+            post_id: postId,
+            content: content
+        }
+    });
+    return newComment;
+
 export const likeToggle = async (postId, userId) => {
     const post = await prisma.post.findUnique({
         where: {
