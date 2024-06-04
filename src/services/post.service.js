@@ -61,7 +61,7 @@ export const likeToggle = async (postId, userId) => {
             where: { id: postId },
             data: { like_count: { increment: 1 } }
         });
-        throw new ErrorHandler(STATUS_CODES.CREATED, "좋아요를 눌렀습니다.");
+        return { status: STATUS_CODES.CREATED, message: "좋아요를 눌렀습니다." };
     } else {
         await prisma.postLike.delete({
             where: {

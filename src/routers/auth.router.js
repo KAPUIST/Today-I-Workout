@@ -91,8 +91,8 @@ router.post("/auth/logout", async (req, res, next) => {
 
         return res.status(STATUS_CODES.NO_CONTENT).json({
             status: STATUS_CODES.NO_CONTENT,
-            message: "로그인 완료",
-        })
+            message: "로그인 완료"
+        });
     } catch (error) {
         next(error);
     }
