@@ -1,7 +1,8 @@
 import express from "express";
 import STATUS_CODES from "../constants/status.constant.js";
 import { fetchPostsByPostType } from "../services/post.service.js";
-// import { requireaccessToken } from "../middlewares/auth.middleware.js";
+import { createPost } from "../services/post.service.js";
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
@@ -14,34 +15,16 @@ const testMiddleware = (req, res, next) => {
 };
 
 /** 게시글 생성 API */
-router.post("/posts", testMiddleware, postWriteValidator, async (req, res, next) => {
-    // 제목, 내용을 Request Body(req.body)로 전달 받습니다.
+router.post("/posts", requireAccessToken, postWriteValidator, async (req, res, next) => {
     const { title, content, postType } = req.body;
     try {
-        // 사용자 ID는 미들웨어를 통해 req.user에 설정됨
         const { id } = req.user;
 
-        // 새로운 게시글 생성
-        const newpost = await prisma.post.create({
-            data: {
-                user_id: id,
-                title,
-                content,
-                post_type: postType,
-            }
-        });
-        // → 게시글 ID, 게시글 ID, 제목, 내용, 생성일시, 수정일시를 반환합니다.
+        const newPostData = await createPost(id, title, content, postType);
+
         return res.status(STATUS_CODES.CREATED).json({
             message: '새로운 게시글이 생성되었습니다.',
-            data: {
-                id: newpost.id,
-                title: newpost.title,
-                postType: newpost.post_type,
-                content: newpost.content,
-                createdAt: newpost.created_at,
-                updatedAt: newpost.updated_at
-            }
-
+            data: newPostData
         });
     } catch (error) {
         next(error);
@@ -122,7 +105,7 @@ router.get("/posts/:postId", async (req, res, next) => {
         });
 
         if (!post) {
-            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST).json({ message: "일치하는 게시글이 없습니다." });
+            throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "일치하는 게시글이 없습니다.");
         }
 
         return res.status(STATUS_CODES.OK).json(post);
