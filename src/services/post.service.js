@@ -78,3 +78,55 @@ export const likeToggle = async (postId, userId) => {
         return { status: STATUS_CODES.OK, message: "좋아요를 취소했습니다." };
     }
 };
+
+export const commentLikeToggle = async (commentId, userId) => {
+    const comment = await prisma.comment.findUnique({
+        where: {
+            id: commentId
+        }
+    });
+
+    if (!comment) {
+        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "댓글을 찾을 수 없습니다.");
+    }
+
+    if (userId === comment.user_id) {
+        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "자신이 작성한 댓글에는 좋아요를 누를 수 없습니다.");
+    }
+
+    const like = await prisma.commentLike.findFirst({
+        where: {
+            comment_id: commentId,
+            user_id: userId
+        }
+    });
+
+    if (!like) {
+        await prisma.commentLike.create({
+            data: {
+                user: {
+                    connect: { id: userId }
+                },
+                comment: {
+                    connect: { id: commentId }
+                }
+            }
+        });
+        await prisma.comment.update({
+            where: { id: commentId },
+            data: { like_count: { increment: 1 } }
+        });
+        return { status: STATUS_CODES.CREATED, message: "댓글에 좋아요를 눌렀습니다." };
+    } else {
+        await prisma.commentLike.delete({
+            where: {
+                id: like.id
+            }
+        });
+        await prisma.comment.update({
+            where: { id: commentId },
+            data: { like_count: { decrement: 1 } }
+        });
+        return { status: STATUS_CODES.OK, message: "댓글에 좋아요를 취소했습니다." };
+    }
+};

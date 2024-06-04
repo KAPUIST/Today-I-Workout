@@ -4,14 +4,14 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt.util.js"
 import STATUS_CODES from "../constants/status.constant.js";
 import { signInValidator } from "../utils/validator/signIn.validator.js";
 import { signUpValidator } from "../utils/validator/signUp.validator.js";
-import ErrorHandler from "../utils/validator/customErrorHandler.js";
+import ErrorHandler from "../utils/customErrorHandler.js";
+import CustomErrorHandler from "../utils/customErrorHandler.js";
 import { loginUser } from "../services/auth.service.js";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
-
+import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { findUserByEmail, sendMail, createUser } from "../services/auth.service.js";
 import { verifyEmailAccessToken } from "../utils/jwt.util.js";
-
 
 const router = express.Router();
 
@@ -89,12 +89,21 @@ router.post("/auth/logout", async (req, res, next) => {
         //     },
         // });
         //쿠키에서 리프레시 토큰 제거 (스키마에 refreshToken모델이 없어서 NULL값으로 만드는게 불가능)
+
+        const refreshToken = req.cookies.refreshToken;
+        console.log(refreshToken);
+        if (!refreshToken) {
+            throw new ErrorHandler(STATUS_CODES.UNAUTHORIZED, "로그인 상태가 아닙니다.");
+        }
+
+        // verifyrefreshToken(refreshToken);
+
         res.cookie("accessToken", "", { maxAge: 0, httpOnly: true });
         res.cookie("refreshToken", "", { maxAge: 0, httpOnly: true });
 
         return res.status(STATUS_CODES.NO_CONTENT).json({
             status: STATUS_CODES.NO_CONTENT,
-            message: "로그인 완료"
+            message: "로그아웃 완료"
         });
     } catch (error) {
         next(error);
