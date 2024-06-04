@@ -14,7 +14,7 @@ import { requireAccessToken } from "../middlewares/auth.middleware.js";
 import { postWriteValidator } from "../utils/validator/postWrite.validator.js";
 import { prisma } from "../utils/prisma/prisma.util.js";
 import ErrorHandler from "../utils/customErrorHandler.js";
-
+import { postUpdateValidator } from "../utils/validator/postUpdate.validator.js";
 import { likeToggle } from "../services/post.service.js";
 
 const router = express.Router();
@@ -52,7 +52,7 @@ router.post("/posts", requireAccessToken, postWriteValidator, async (req, res, n
 /** 나의 게시글 조회 API */ // 데이터베이스에서 게시글 조회 조건 설정
 router.get("/posts/myposts", requireAccessToken, async (req, res, next) => {
     const { postType, orderBy } = req.query;
-    const { id: userId } = req.user;
+    const userId = req.user.id;
 
     try {
         // 조회된 게시글을 반환합니당
@@ -67,6 +67,7 @@ router.get("/posts/myposts", requireAccessToken, async (req, res, next) => {
 
 router.get("/posts", async (req, res, next) => {
     const { postType, orderBy } = req.query;
+    //postType이 없을경우 예외
     try {
         const posts = await fetchPostsByPostType(postType, orderBy);
         res.status(STATUS_CODES.OK).json({ data: posts });
@@ -89,13 +90,13 @@ router.get("/posts/:postId", async (req, res, next) => {
 
 /** 게시글 수정 API */
 
-router.patch("/posts/:postId", requireAccessToken, async (req, res, next) => {
-    const { id: userId } = req.user;
+router.put("/posts/:postId", requireAccessToken, postUpdateValidator, async (req, res, next) => {
+    const userId = req.user.id;
     const { postId } = req.params;
-    const { title, content, postType } = req.body;
+    const userInputData = req.body;
     try {
-        const updatedpost = await editPost(userId, postId, title, content, postType);
-        res.status(STATUS_CODES.OK).json({ data: updatedpost });
+        const updatedPost = await editPost(userId, postId, userInputData);
+        res.status(STATUS_CODES.OK).json({ data: updatedPost });
     } catch (error) {
         next(error);
     }
@@ -104,7 +105,7 @@ router.patch("/posts/:postId", requireAccessToken, async (req, res, next) => {
 /** 게시글 삭제 API */
 
 router.delete("/posts/:postId", requireAccessToken, async (req, res, next) => {
-    const { id: userId } = req.user;
+    const userId = req.user.id;
     const { postId } = req.params;
     try {
         const post = await deletePost(userId, postId);

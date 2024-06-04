@@ -86,9 +86,9 @@ export const fetchPostsByPostType = async (postType, orderBy) => {
 };
 
 // 게시글 상세조회 로직
-export const fetchPostSangsae = async (id) => {
+export const fetchPostSangsae = async (postId) => {
     const post = await prisma.post.findFirst({
-        where: { id: id },
+        where: { id: postId },
         select: {
             id: true,
             user_id: true,
@@ -110,69 +110,101 @@ export const fetchPostSangsae = async (id) => {
         }
     });
 
-    if (!id) {
-        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "일치하는 게시글이 없습니다.");
+    if (!post) {
+        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "일치하는 게시글이 없습니다.");
     }
     return post;
 };
 // 게시글 수정 로직
-export const editPost = async (userId, postId, title, content, postType) => {
+export const editPost = async (userId, postId, userInputData) => {
     // → 현재 로그인 한 사용자가 작성한 게시글만 수정합니다.
     // → DB에서 게시글 조회 시 게시글 ID, 작성자 ID가 모두 일치해야 합니다.
+    const { title, content, postType, dietTitle, kcal, mealType } = userInputData;
     const post = await prisma.post.findFirst({
         where: {
             user_id: userId,
             id: postId
         },
-        select: {
-            id: true,
-            user_id: true,
-            post_type: true,
-            title: true,
-            content: true,
-            like_count: true,
-            created_at: true,
-            updated_at: true,
-            diet: {
-                // Diet 테이블 관련 데이터 포함
-                select: {
-                    post_id: true,
-                    diet_title: true,
-                    kcal: true,
-                    meal_type: true
-                }
-            }
-        }
+        include: { diet: true }
     });
-    // → 제목, 내용 둘 다 없는 경우 → “수정 할 정보를 입력해 주세요.”
-    if (!title && !content) {
-        throw new ErrorHandler(STATUS_CODES.BAD_REQUEST, "수정 할 정보를 입력해주세요.");
-    }
-    // → 게시글 정보가 없는 경우 → “게시글이 존재하지 않습니다.”
+    console.log(post, "2331231");
+    //diet === null
     if (!post) {
         throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.");
     }
-    // → DB에서 게시글 정보를 수정합니다.
-    // → 제목, 내용, 포스트타입은 개별 수정이 가능합니다.
-    const updatedpost = await prisma.post.update({
-        where: { id: postId },
-        data: {
-            ...(title && { title }),
-            ...(content && { content }),
-            ...(postType && { post_type: postType })
+
+    const result = await prisma.$transaction(async (tx) => {
+        if (post.post_type === "TIW" && postType === "DIET") {
+            await tx.diet.create({
+                data: {
+                    post_id: postId,
+                    diet_title: dietTitle,
+                    kcal,
+                    meal_type: mealType
+                }
+            });
+            const updatedPost = await tx.post.update({
+                where: { id: postId },
+                data: {
+                    title,
+                    content,
+                    post_type: postType
+                },
+                include: { diet: true }
+            });
+            return updatedPost;
+        } else if (post.post_type === "DIET" && postType === "TIW") {
+            await tx.diet.delete({
+                where: { post_id: postId }
+            });
+            const updatedPost = await tx.post.update({
+                where: { id: postId },
+                data: {
+                    title,
+                    content,
+                    post_type: postType
+                }
+            });
+            return updatedPost;
+        } else if (post.post_type === "DIET") {
+            await tx.diet.update({
+                where: { post_id: postId },
+                data: {
+                    post_id: postId,
+                    diet_title: dietTitle,
+                    kcal,
+                    meal_type: mealType
+                }
+            });
+            const updatedPost = await tx.post.update({
+                where: { id: postId },
+                data: {
+                    title,
+                    content,
+                    post_type: postType
+                },
+                include: { diet: true }
+            });
+            return updatedPost;
+        } else if (post.post_type === "TIW") {
+            const updatedPost = await tx.post.update({
+                where: { id: postId },
+                data: {
+                    title,
+                    content,
+                    post_type: postType
+                }
+            });
+            return updatedPost;
         }
     });
-    // → 수정 된 게시글 ID, 작성자 ID, 포스트타입, 제목, 내용, 좋아요, 생성일시, 수정일시를 반환합니다.
-    return updatedpost;
+
+    return result;
 };
 
 // 게시글 삭제 로직
 export const deletePost = async (userId, postId) => {
     // → 게시글이 없는 경우 → “게시글이 존재하지 않습니다.”
-    if (!postId) {
-        throw new ErrorHandler(STATUS_CODES.NOT_FOUND, "게시글이 존재하지 않습니다.");
-    }
-
     const post = await prisma.post.findFirst({
         where: {
             user_id: userId,
@@ -185,10 +217,10 @@ export const deletePost = async (userId, postId) => {
     }
 
     // → DB에서 게시글 정보를 삭제합니다.
-    const deletepost = await prisma.post.delete({
+    const deletePost = await prisma.post.delete({
         where: { id: postId }
     });
-    return deletepost;
+    return deletePost;
 };
 
 // 댓글생성 1-3 댓글을 데이터베이스에 생성
