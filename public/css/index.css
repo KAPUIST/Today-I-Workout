@@ -1,0 +1,274 @@
+/* 공통 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+}
+
+/* 내비게이션 스타일 */
+nav ul {
+    list-style-type: none; /* 점 제거 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 20px; /* 항목 간의 여백을 늘림 */
+}
+
+nav ul li:nth-child(4) {
+    margin-left: auto;
+}
+
+nav ul li:nth-child(5) {
+    margin-left: 20px; /* 여백 추가 */
+}
+
+nav ul li:nth-child(6) {
+    margin-left: -20px; /* 여백 조정 */
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem; /* 글씨 크기 1/10 증가 */
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 검색창 스타일 */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-button {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: none; /* 테두리 제거 */
+    border-radius: 0 5px 5px 0;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #555;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: black;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 15px; /* 외곽 둥글게 */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* 로그인 모달 크기 조정 */
+#login-modal .modal-content {
+    width: 40%; /* 너비를 줄이기 */
+    max-width: 500px; /* 최대 너비를 줄이기 */
+    height: 80%; /* 높이를 늘리기 */
+    max-height: 80%; /* 최대 높이 조정 */
+}
+
+/* 회원가입 모달 크기 조정 */
+#signup-modal .modal-content {
+    width: 60%; /* 너비를 늘리기 */
+    max-width: 700px; /* 최대 너비를 늘리기 */
+    height: auto; /* 높이를 자동으로 조정 */
+    max-height: 70%; /* 최대 높이 조정 */
+}
+
+.modal-body {
+    overflow-y: auto; /* 상하 슬라이드 가능하게 설정 */
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 모달 제목 스타일 */
+#loginHeader,
+#signUpHeader {
+    font-size: 35px; /* 제목 글씨 키우기 */
+    text-align: center; /* 가운데 정렬 */
+    margin-bottom: 20px; /* 아래 여백 추가 */
+    margin-top: 10px;
+}
+
+/* 모달 내부 콘텐츠 스타일 */
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-grow: 1;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-body label {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+    font-size: 18px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: calc(100% - 30px); /* 좌우로 더 넓게 조정 */
+    margin-left: 15px; /* 좌측 여백 추가 */
+    box-sizing: border-box;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* 수정 */
+    bottom: 0; /* 수정 */
+    width: calc(100% - 30px); /* 버튼 넓이 조정 */
+    left: 15px; /* 좌측 여백 추가 */
+}
+
+.modal-content button {
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.modal-content button:hover {
+    background-color: #555;
+}
+
+/* 게시글 리스트 스타일 */
+main {
+    padding: 20px;
+}
+
+.post-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none; /* 점 제거 */
+    padding: 0;
+    margin: 0;
+}
+
+.post-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    flex: 1 0 18%; /* 각 게시글이 5개씩 가로로 배치되도록 설정 (100% / 5 = 20%, 여기에 약간의 마진을 고려하여 18%) */
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#emailLabel {
+    color: black;
+    margin-left: 20px;
+}
+#passwordLabel {
+    color: black;
+    margin-left: 20px;
+}
+#loginHeader {
+    color: black;
+}
+.like-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 오른쪽으로 정렬 */
+    margin-top: 10px; /* 상단 여백 추가 */
+}
+.like-button .heart {
+    margin-left: 0.5em; /* 하트를 오른쪽에 위치하도록 설정 */
+    color: black; /* 하트를 검은색으로 설정 */
+}
+.liked .heart {
+    color: black; /* 좋아요를 누르면 검은 하트로 변경 */
+}
+.like-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.like-count {
+    margin-left: 0.5em;
+    font-size: 1.2rem;
+    color: black;
+}

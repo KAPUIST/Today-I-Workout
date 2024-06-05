@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>메인 페이지</title>
+        <link rel="stylesheet" href="../css/user.css" />
+        <script src="../script/user.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#" id="home-link">Home</a></li>
+                    <li><a href="#" id="tiw-link">TIW</a></li>
+                    <li><a href="#">MEAL</a></li>
+                    <li>
+                        <form class="search-form">
+                            <!-- 검색창 구현 -->
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                class="search-input"
+                            />
+                            <!-- 검색아이콘 -->
+                            <button type="submit" class="search-button">
+                                🔍
+                            </button>
+                        </form>
+                    </li>
+                    <li><a href="post.html">Create Post</a></li>
+                    <li>
+                        <a href="#" id="login-link">Login</a>
+                        <a href="#" id="logout-link" style="display: none"
+                            >LogOut</a
+                        >
+                        <div id="login-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" data-modal="login-modal"
+                                    >&times;</span
+                                >
+                                <h2 id="loginHeader">Login</h2>
+                                <form
+                                    id="login-form"
+                                    action="/login"
+                                    method="POST"
+                                >
+                                    <div>
+                                        <label id="emailLabel" for="email"
+                                            >Email:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="email"
+                                            name="email"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label id="passwordLabel" for="password"
+                                            >Password:</label
+                                        >
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="button-group">
+                                        <button type="submit">Login</button>
+                                        <button type="button" id="show-signup">
+                                            Sign Up
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="signup-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" data-modal="signup-modal"
+                                    >&times;</span
+                                >
+                                <h2 id="signUpHeader">회원가입</h2>
+                                <div class="modal-body">
+                                    <form
+                                        id="signup-form"
+                                        action="/signup"
+                                        method="POST"
+                                    >
+                                        <div>
+                                            <label
+                                                id="emailLabel"
+                                                for="signup-email"
+                                                >Email:
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="signup-email"
+                                                name="email"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="passwordLabel"
+                                                for="signup-password"
+                                                >Password:</label
+                                            >
+                                            <input
+                                                type="password"
+                                                id="signup-password"
+                                                name="password"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="usernameLabel"
+                                                for="signup-username"
+                                                >Username:</label
+                                            >
+                                            <input
+                                                type="text"
+                                                id="signup-username"
+                                                name="username"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="currentWeightLabel"
+                                                for="signup-current-weight"
+                                                >Current Weight:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                id="signup-current-weight"
+                                                name="currentWeight"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="goalWeightLabel"
+                                                for="signup-goal-weight"
+                                                >Goal Weight:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                id="signup-goal-weight"
+                                                name="goalWeight"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="exerciseTypeLabel"
+                                                for="signup-exercise-type"
+                                                >Favorite Exercise Type:</label
+                                            >
+                                            <select
+                                                id="signup-exercise-type"
+                                                name="exerciseType"
+                                                required
+                                            >
+                                                <option value="running">
+                                                    Running
+                                                </option>
+                                                <option value="weightlifting">
+                                                    Weightlifting
+                                                </option>
+                                                <option value="yoga">
+                                                    Yoga
+                                                </option>
+                                                <option value="cycling">
+                                                    Cycling
+                                                </option>
+                                                <option value="swimming">
+                                                    Swimming
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label
+                                                id="bioLabel"
+                                                for="signup-bio"
+                                                >Bio:</label
+                                            >
+                                            <textarea
+                                                id="signup-bio"
+                                                name="bio"
+                                                rows="4"
+                                                cols="50"
+                                                placeholder="Introduce yourself"
+                                                required
+                                            ></textarea>
+                                        </div>
+                                        <div class="button-group">
+                                            <button>인증하기</button>
+                                            <button type="submit">
+                                                Sign Up
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="user.html" id="my-page">MY</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <ul>
+                <li>
+                    <div>
+                        <img />
+                        <h3>개인 정보</h3>
+                        <!-- 이름 -->
+                        <p>Username: <span id="user-username"></span></p>
+                        <!-- 이메일 -->
+                        <p>Email: <span id="user-email"></span></p>
+                        <!-- 현재 몸무게 -->
+                        <p>
+                            Current Weight:
+                            <span id="user-current-weight"></span>
+                        </p>
+                        <!-- 목표 몸무게 -->
+                        <p>Goal Weight: <span id="user-goal-weight"></span></p>
+                        <!-- 비밀번호 변경 버튼 -->
+                        <button id="change-password-button">
+                            Change Password
+                        </button>
+                        <div>
+                            <!-- 비밀번호 변경 모달 창 -->
+                            <!-- 현재 비밀번호 -->
+                            <!-- 바꿀 비밀번호 -->
+                            <!-- 바꾼 비밀번호 확안 -->
+                        </div>
+                    </div>
+                    <div>
+                        <ul class="post-list">
+                            <li class="post-item">
+                                <div>
+                                    <img
+                                        src="path/to/image1.jpg"
+                                        alt="Post Image 1"
+                                    />
+                                    <h3>게시글 제목 1</h3>
+                                    <button class="like-button">
+                                        <span class="heart">♡</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="post-item">
+                                <div>
+                                    <img
+                                        src="path/to/image2.jpg"
+                                        alt="Post Image 2"
+                                    />
+                                    <h3>게시글 제목 2</h3>
+                                    <button class="like-button">
+                                        <span class="heart">♡</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="post-item">
+                                <div>
+                                    <img
+                                        src="path/to/image3.jpg"
+                                        alt="Post Image 3"
+                                    />
+                                    <h3>게시글 제목 3</h3>
+                                    <button class="like-button">
+                                        <span class="heart">♡</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="post-item">
+                                <div>
+                                    <img
+                                        src="path/to/image4.jpg"
+                                        alt="Post Image 4"
+                                    />
+                                    <h3>게시글 제목 4</h3>
+                                    <button class="like-button">
+                                        <span class="heart">♡</span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="post-item">
+                                <div>
+                                    <img
+                                        src="path/to/image5.jpg"
+                                        alt="Post Image 5"
+                                    />
+                                    <h3>게시글 제목 5</h3>
+                                    <button class="like-button">
+                                        <span class="heart">♡</span>
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </main>
+    </body>
+</html>

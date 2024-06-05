@@ -10,8 +10,9 @@ import { SERVER_PORT } from "./constants/env.constant.js";
 import cookieParser from "cookie-parser";
 import STATUS_CODES from "./constants/status.constant.js";
 dotenv.config();
-
 const app = express();
+
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
