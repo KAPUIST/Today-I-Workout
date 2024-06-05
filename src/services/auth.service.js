@@ -27,7 +27,7 @@ export const sendMail = async (userData) => {
         userData.password = await hashPassword(userData.password);
 
         const token = generateEmailAccessToken(userData);
-        const verificationLink = `http://localhost:3000/auth/verification/${token}`;
+        const verificationLink = `https://dfgdwssegf.shop/auth/verification/${token}`;
         console.log(userData.password);
 
         // 이메일 옵션 설정
