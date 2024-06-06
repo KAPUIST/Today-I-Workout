@@ -14,15 +14,14 @@
 
 - [S.A 페이지](https://www.notion.so/teamsparta/Five-Is-30cd86fa2e144752a58d2b8664cb0979)
 - [팀 프로젝트 회의록 링크](https://teamsparta.notion.site/0dfaae18a1bb483482781b8c32aef644)
-- [팀 프로젝트 대본 링크](아마도 생성 예정)
-- [팀 프로젝트 ppt 링크](아마도 생성 예정)
+- [팀 프로젝트 ppt 링크](https://docs.google.com/presentation/d/1k5fgcVAvy8mIzc48lH3otTqVF3H4yEOAhh_Y5qQvv1c/edit#slide=id.g27311cba8c2_0_35)
 
 ### Wireframe
 
-![alt text](사진나오면 등록예정)
+![와이어프레임2](https://github.com/KAPUIST/Today-I-Workout/assets/166491440/05d0e589-bad6-4db0-b8a2-666c26cee59e)
 
 - 웹 기반 UI/UX 협업 툴, Figma 사용
-- [Figma 협업 링크](피그마 링크 나오면 등록)
+- [피그마 링크](https://www.figma.com/design/m1UTAHbOgk0gp0UNzvEcRz/seungyeop-yoo's-team-library?node-id=0-1&t=AO8poltChcf9MG2B-0)
 
 ### Code Convention
 
@@ -147,11 +146,6 @@ git commit -m “[Fix] - 엑세스 토큰 검증 로직 일부 변경”
 5. local `[issue별 자동 생성 브랜치명]` branch에서 conflict 해결 후
 remote `[issue별 자동 생성 브랜치명]` branch로 push
 
-## 💻 프로젝트 설명
-
-### 🚀 Landing Page
-
-## 📂 프로젝트 구성
 
 ### 폴더 구조
 
