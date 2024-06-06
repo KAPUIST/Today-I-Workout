@@ -2,7 +2,7 @@
 내일배움 캠프 8조(Five Is) 오운완 프로젝트 ^_^
 
 
-- [배포 웹사이트 링크](https://dfgdwssegf.shop)
+- [배포 웹사이트 링크](https://dfgdwssegf.shop/posts)
 
 - [API 명세서 링크](https://teamsparta.notion.site/API-Five-is-Today-I-Workout-867ce70ab63c4c498dd8313df03dcdb4)
 
