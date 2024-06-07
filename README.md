@@ -13,7 +13,6 @@
 ### Minutes of meeting
 
 - [S.A 페이지](https://www.notion.so/teamsparta/Five-Is-30cd86fa2e144752a58d2b8664cb0979)
-- [팀 프로젝트 회의록 링크](https://teamsparta.notion.site/0dfaae18a1bb483482781b8c32aef644)
 - [팀 프로젝트 ppt 링크](https://docs.google.com/presentation/d/1k5fgcVAvy8mIzc48lH3otTqVF3H4yEOAhh_Y5qQvv1c/edit#slide=id.g27311cba8c2_0_35)
 
 ### Wireframe
